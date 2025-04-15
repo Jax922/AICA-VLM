@@ -3,41 +3,11 @@
 # EMOTIC dataset
 # https://github.com/rkosti/emotic
 
-
 import os
 import shutil
 import scipy.io
 import pandas as pd
 from tqdm import tqdm
-
-EMOTIC_TO_BASIC = {
-    'Affection': 'happiness',
-    'Anger': 'anger',
-    'Annoyance': 'anger',
-    'Anticipation': 'happiness',
-    'Aversion': 'disgust',
-    'Confidence': 'happiness',
-    'Disapproval': 'disgust',
-    'Disconnection': 'sadness',
-    'Disquietment': 'fear',
-    'Doubt/Confusion': 'sadness',
-    'Embarrassment': 'sadness',
-    'Engagement': 'happiness',
-    'Esteem': 'happiness',
-    'Excitement': 'happiness',
-    'Fatigue': 'sadness',
-    'Fear': 'fear',
-    'Happiness': 'happiness',
-    'Pain': 'sadness',
-    'Peace': 'happiness',
-    'Pleasure': 'happiness',
-    'Sadness': 'sadness',
-    'Sensitivity': 'sadness',
-    'Suffering': 'sadness',
-    'Surprise': 'surprise',
-    'Sympathy': 'happiness',
-    'Yearning': 'sadness',
-}
 
 def extract_emotic_annotations_with_copy(mat_path, image_root_dir, output_dir, output_csv_path):
     os.makedirs(output_dir, exist_ok=True)
@@ -84,15 +54,7 @@ def extract_emotic_annotations_with_copy(mat_path, image_root_dir, output_dir, o
                     else:
                         original_labels = [str(cats)]
 
-                    # 映射到6类基础情绪，并去重
-                    basic_labels = sorted(set(
-                        EMOTIC_TO_BASIC.get(label.strip(), None)
-                        for label in original_labels
-                        if EMOTIC_TO_BASIC.get(label.strip(), None) is not None
-                    ))
-
-                    # 用 | 拼接基础情绪分类
-                    emotion_cat = '|'.join(basic_labels) if basic_labels else 'neutral'
+                    emotion_cat = '|'.join(label.strip() for label in original_labels)
 
                     emotion_v = person.annotations_continuous.valence
                     emotion_a = person.annotations_continuous.arousal
@@ -110,7 +72,9 @@ def extract_emotic_annotations_with_copy(mat_path, image_root_dir, output_dir, o
 
     df = pd.DataFrame(data)
     df.to_csv(output_csv_path, index=False)
-    print(f"\n✅ Saved cleaned CSV to {output_csv_path}")
+    print(f"\nSaved cleaned CSV to {output_csv_path}")
+    print(f"Total valid entries: {len(df)}")
+
 
 if __name__ == "__main__":
     mat_path = r'D:\vlm-eq\emotic\Annotations\Annotations\Annotations.mat'

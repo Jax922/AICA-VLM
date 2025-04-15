@@ -1,3 +1,8 @@
+
+# EmoSet dataset
+# https://vcc.tech/EmoSet
+
+
 import os
 import json
 import shutil
@@ -36,14 +41,12 @@ def parse_and_copy_emoset(json_paths, image_root_dir, output_image_dir, output_c
                 'emotion_a': None
             })
 
-    # 写入 CSV
     df = pd.DataFrame(data)
     df.to_csv(output_csv_path, index=False)
-    print(f"\n✅ Saved CSV to {output_csv_path}")
-    print(f"✅ Copied {len(df)} images to {output_image_dir}")
+    print(f"\nSaved CSV to {output_csv_path}")
+    print(f"Copied {len(df)} images to {output_image_dir}")
 
 
-# 示例调用
 if __name__ == "__main__":
     json_dir = r'D:\dev\VLM-EQ\datasets\emoset'
     image_root_dir = r'D:\vlm-eq\EmoSet-118K'
