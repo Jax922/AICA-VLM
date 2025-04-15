@@ -12,7 +12,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Jax922/VLM-EQ">
-    <img src="images/logo.png" alt="Logo" width="500" height="500">
+    <img src="images/logo.png" alt="Logo" width="200" height="200">
   </a>
 
   <h3 align="center">VLM-EQ</h3>
