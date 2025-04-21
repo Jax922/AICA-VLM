@@ -38,7 +38,8 @@ def parse_and_copy_emoset(json_paths, image_root_dir, output_image_dir, output_c
                 'img_folder': os.path.basename(output_image_dir),
                 'emotion_cat': emotion_cat,
                 'emotion_v': None,
-                'emotion_a': None
+                'emotion_a': None,
+                'source_dataset': 'EmoSet'
             })
 
     df = pd.DataFrame(data)
