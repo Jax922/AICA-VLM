@@ -1,3 +1,6 @@
+# Emotion6 dataset
+# http://chenlab.ece.cornell.edu/downloads.html
+
 import csv
 import os
 import pandas as pd
