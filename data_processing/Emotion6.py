@@ -1,5 +1,9 @@
+# Emotion6 dataset
+# http://chenlab.ece.cornell.edu/downloads.html
+
 import csv
 import os
+import pandas as pd
 
 def convert_txt_to_csv(input_file, output_file):
     """
@@ -55,57 +59,36 @@ def process_csv(input_file, output_file):
         input_file (str): Path to the input CSV file
         output_file (str): Path to save the output CSV file
     """
-    # Check if input file exists
-    if not os.path.exists(input_file):
-        print(f"Error: Input file '{input_file}' not found.")
-        return False
-    
-    try:
-        # Read the input CSV file
-        with open(input_file, 'r', newline='', encoding='utf-8') as infile:
-            reader = csv.reader(infile)
-            
-            # Read the header row
-            header = next(reader)
-            
-            # Find the index of the img_name column
-            try:
-                img_name_index = header.index('img_name')
-            except ValueError:
-                print("Error: 'img_name' column not found in the CSV file.")
-                return False
-            
-            # Prepare to write the output CSV file
-            with open(output_file, 'w', newline='', encoding='utf-8') as outfile:
-                writer = csv.writer(outfile)
-                
-                # Write the header row
-                writer.writerow(header)
-                
-                # Process each row
-                rows_processed = 0
-                for row in reader:
-                    if row and len(row) > img_name_index:
-                        # Replace '/' with '_' in the img_name column
-                        row[img_name_index] = row[img_name_index].replace('/', '_')
-                        writer.writerow(row)
-                        rows_processed += 1
-        
-        print(f"Successfully processed {rows_processed} rows.")
-        print(f"Modified CSV saved to '{output_file}'.")
-        return True
-    
-    except Exception as e:
-        print(f"Error processing CSV file: {e}")
-        return False
+    # Read the ground_truth.csv file
+    df = pd.read_csv(input_file)
+
+    # Create a new DataFrame
+    new_df = pd.DataFrame()
+
+    # Process column data
+    new_df['img_name'] = df['[image_filename]']
+    # Add this line to replace '/' with '_' in img_name column
+    new_df['img_name'] = new_df['img_name'].apply(lambda x: x.replace('/', '_'))
+    new_df['img_folder'] = 'Emotion6_images'
+    # Extract emotion_cat (extract the word before '/' from image_filename)
+    new_df['emotion_cat'] = df['[image_filename]'].apply(lambda x: x.split('/')[0])
+
+    # Normalize valence and arousal from 1-9 to -1 to 1
+    # Normalization formula: (value - min_value) / (max_value - min_value) * (new_max - new_min) + new_min
+    # For 1-9 range mapping to -1 to 1: (value - 1) / (9 - 1) * (1 - (-1)) + (-1) = (value - 1) / 4 - 1
+    new_df['emotion_v'] = df['[valence]'].apply(lambda x: (x - 1) / 4 - 1)
+    new_df['emotion_a'] = df['[arousal]'].apply(lambda x: (x - 1) / 4 - 1)
+
+    # Add dataset_source column
+    new_df['dataset_source'] = 'Emotion6_dataset'
+
+    # Save the results to a new CSV file
+    new_df.to_csv(output_file, index=False)
 
 # Call the function
 if __name__ == "__main__":
     
-    convert_txt_to_csv('ground_truth.txt', 'ground_truth.csv')
-    success = process_csv('ground_truth.csv', 'Emotion6_dataset_annotations.csv')
+    convert_txt_to_csv("C:\\Users\\29835\\Desktop\\VLM-EQ-main\\VLM-EQ-main\\datasets\\Emotion6_dataset\\ground_truth.txt", 'ground_truth.csv')
+    process_csv('ground_truth.csv', 'Emotion6_dataset_annotations.csv')
     
-    if success:
-        print("CSV processing completed successfully.")
-    else:
-        print("CSV processing failed.")
+    print("CSV processing completed successfully.")
