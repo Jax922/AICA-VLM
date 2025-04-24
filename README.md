@@ -30,3 +30,18 @@
     <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p> -->
 </div>
+
+
+# AICA-VLM Benchmark
+
+This project provides a benchmark framework for evaluating VLMs on emotion understanding and reasoning.
+
+## 🛠 Installation
+
+```bash
+# Editable install
+pip install -e .
+
+# Or traditional
+pip install -r requirements.txt
+```

@@ -1,9 +1,10 @@
-#ArtPhoto dataset
-#https://www.imageemotion.org
+# ArtPhoto dataset
+# https://www.imageemotion.org
 
 import os
-import pandas as pd
 import shutil
+
+import pandas as pd
 
 
 def process_artphoto_data(image_folder, output_csv_path, output_dir):
@@ -17,10 +18,23 @@ def process_artphoto_data(image_folder, output_csv_path, output_dir):
     - output_dir: Directory to save the organized images.
     """
     # Define the emotion labels
-    emotion_labels = ['amusement', 'anger', 'awe', 'content', 'disgust', 'excitement', 'fear', 'sad']
+    emotion_labels = [
+        "amusement",
+        "anger",
+        "awe",
+        "content",
+        "disgust",
+        "excitement",
+        "fear",
+        "sad",
+    ]
 
     # Get all image files in the folder
-    image_files = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif'))]
+    image_files = [
+        f
+        for f in os.listdir(image_folder)
+        if f.lower().endswith((".png", ".jpg", ".jpeg", ".bmp", ".gif"))
+    ]
 
     # Initialize a list to store image information
     image_data = []
@@ -38,7 +52,9 @@ def process_artphoto_data(image_folder, output_csv_path, output_dir):
 
         # Check if the image name contains an emotion label
         for label in emotion_labels:
-            if label in image_name.lower():  # Check if the emotion label is in the image name
+            if (
+                label in image_name.lower()
+            ):  # Check if the emotion label is in the image name
                 emotion_cat = label
                 break  # Exit the loop once a matching emotion label is found
 
@@ -49,7 +65,9 @@ def process_artphoto_data(image_folder, output_csv_path, output_dir):
         dataset_source = "testImage_artphoto"
 
         # Add the image information to the list
-        image_data.append([image_name, img_folder, emotion_cat, emotion_v, emotion_a, dataset_source])
+        image_data.append(
+            [image_name, img_folder, emotion_cat, emotion_v, emotion_a, dataset_source]
+        )
 
         # Copy image to the target directory
         original_img_path = os.path.join(image_folder, image_name)
@@ -61,9 +79,17 @@ def process_artphoto_data(image_folder, output_csv_path, output_dir):
         shutil.copy2(original_img_path, target_img_path)
 
     # Convert the image information to a DataFrame
-    image_df = pd.DataFrame(image_data,
-                            columns=['img_name', 'img_folder', 'emotion_cat', 'emotion_v', 'emotion_a',
-                                     'dataset_source'])
+    image_df = pd.DataFrame(
+        image_data,
+        columns=[
+            "img_name",
+            "img_folder",
+            "emotion_cat",
+            "emotion_v",
+            "emotion_a",
+            "dataset_source",
+        ],
+    )
 
     # Save the data as a CSV file
     image_df.to_csv(output_csv_path, index=False)
@@ -73,8 +99,10 @@ def process_artphoto_data(image_folder, output_csv_path, output_dir):
 
 if __name__ == "__main__":
     image_folder = r"C:\Users\yu_da\Desktop\VLM data\download\testImages_artphoto"  # Specify the actual image directory
-    output_csv_path = './datasets/Artphoto/artphoto.csv'  # Path to save the CSV file
-    output_dir = './datasets/Artphoto/processed_images'  # Directory to store processed images
+    output_csv_path = "./datasets/Artphoto/artphoto.csv"  # Path to save the CSV file
+    output_dir = (
+        "./datasets/Artphoto/processed_images"  # Directory to store processed images
+    )
 
     # Run the function to process the dataset
     process_artphoto_data(image_folder, output_csv_path, output_dir)

@@ -1,14 +1,16 @@
+# FlickrLDL dataset
+# https://github.com/sherleens/EmotionDistributionLearning/blob/57eb79073e7750132e464292ac890b0dc4e02db2/README.md#download-dataset-lmdb
 
-#FlickrLDL dataset
-#https://github.com/sherleens/EmotionDistributionLearning/blob/57eb79073e7750132e464292ac890b0dc4e02db2/README.md#download-dataset-lmdb
-
-import h5py
-import pandas as pd
 import os
 import shutil
 
+import h5py
+import pandas as pd
 
-def process_flickrldl_data(mat_path, output_csv_path, final_csv_path, image_root_dir, output_dir):
+
+def process_flickrldl_data(
+    mat_path, output_csv_path, final_csv_path, image_root_dir, output_dir
+):
     """
     Process the Flickr LDL dataset, extract annotation data, and organize the images.
 
@@ -25,22 +27,24 @@ def process_flickrldl_data(mat_path, output_csv_path, final_csv_path, image_root
         return
 
     # Open the .mat file
-    with h5py.File(mat_path, 'r') as f:
+    with h5py.File(mat_path, "r") as f:
         # Read 'vote' data
-        vote = f['vote'][:]
+        vote = f["vote"][:]
         # Transpose the vote data so that each row represents an image and each column represents a category of emotion
-        vote = vote.T  # After transpose, vote shape is (11150, 8), each row corresponds to an image, each column corresponds to an emotion category
+        vote = (
+            vote.T
+        )  # After transpose, vote shape is (11150, 8), each row corresponds to an image, each column corresponds to an emotion category
 
         # Create DataFrame for the emotion categories
         data = {
-            'anger': vote[:, 0],
-            'amusement': vote[:, 1],
-            'awe': vote[:, 2],
-            'contentment': vote[:, 3],
-            'disgust': vote[:, 4],
-            'excitement': vote[:, 5],
-            'fear': vote[:, 6],
-            'sadness': vote[:, 7],
+            "anger": vote[:, 0],
+            "amusement": vote[:, 1],
+            "awe": vote[:, 2],
+            "contentment": vote[:, 3],
+            "disgust": vote[:, 4],
+            "excitement": vote[:, 5],
+            "fear": vote[:, 6],
+            "sadness": vote[:, 7],
         }
 
         # Create DataFrame for vote data and save to CSV
@@ -55,16 +59,25 @@ def process_flickrldl_data(mat_path, output_csv_path, final_csv_path, image_root
     df = pd.read_csv(output_csv_path)
 
     # Emotion label list
-    emotion_labels = ['anger', 'amusement', 'awe', 'contentment', 'disgust', 'excitement', 'fear', 'sadness']
+    emotion_labels = [
+        "anger",
+        "amusement",
+        "awe",
+        "contentment",
+        "disgust",
+        "excitement",
+        "fear",
+        "sadness",
+    ]
 
     # Create an empty DataFrame to store processed data
     processed_data = {
-        'img_name': [f"{index + 1}.jpg" for index in range(len(df))],
-        'img_folder': ['LJCAI7'] * len(df),  # Fixed folder name 'LJCAI7'
-        'emotion_cat': [],
-        'emotion_v': [''] * len(df),  # Leave empty
-        'emotion_a': [''] * len(df),  # Leave empty
-        'dataset_source': ['Flickr_LDL'] * len(df)
+        "img_name": [f"{index + 1}.jpg" for index in range(len(df))],
+        "img_folder": ["LJCAI7"] * len(df),  # Fixed folder name 'LJCAI7'
+        "emotion_cat": [],
+        "emotion_v": [""] * len(df),  # Leave empty
+        "emotion_a": [""] * len(df),  # Leave empty
+        "dataset_source": ["Flickr_LDL"] * len(df),
     }
 
     # Iterate through each row to find the emotion category corresponding to the highest probability
@@ -74,7 +87,7 @@ def process_flickrldl_data(mat_path, output_csv_path, final_csv_path, image_root
         emotion_cat = emotion_labels[max_index]  # Get the corresponding emotion label
 
         # Append to processed data
-        processed_data['emotion_cat'].append(emotion_cat)
+        processed_data["emotion_cat"].append(emotion_cat)
 
         # Copy images to the target folder
         img_name = f"{index + 1}.jpg"
@@ -96,11 +109,15 @@ def process_flickrldl_data(mat_path, output_csv_path, final_csv_path, image_root
 
 
 if __name__ == "__main__":
-    mat_path = r'./datasets/Flickr_LDL/flickrldl_config.mat'
-    output_csv_path = r'./datasets/Flickr_LDL/output.csv'
-    final_csv_path = r'./datasets/Flickr_LDL/Flickr_LDL_annotation.csv'
-    image_root_dir = r'./datasets/Flickr_LDL/images'  # Specify the actual image directory
-    output_dir = r'./datasets/Flickr_LDL/processed_images'  # Specify the directory to store processed images
+    mat_path = r"./datasets/Flickr_LDL/flickrldl_config.mat"
+    output_csv_path = r"./datasets/Flickr_LDL/output.csv"
+    final_csv_path = r"./datasets/Flickr_LDL/Flickr_LDL_annotation.csv"
+    image_root_dir = (
+        r"./datasets/Flickr_LDL/images"  # Specify the actual image directory
+    )
+    output_dir = r"./datasets/Flickr_LDL/processed_images"  # Specify the directory to store processed images
 
     # Run the function to process the dataset
-    process_flickrldl_data(mat_path, output_csv_path, final_csv_path, image_root_dir, output_dir)
+    process_flickrldl_data(
+        mat_path, output_csv_path, final_csv_path, image_root_dir, output_dir
+    )

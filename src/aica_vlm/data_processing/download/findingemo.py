@@ -1,12 +1,11 @@
-
-
 import os
-from findingemo_light.paper.download_multi import download_data
+
 from findingemo_light.data.read_annotations import read_annotations
+from findingemo_light.paper.download_multi import download_data
 
 # download the findingemo dataset
-output_dir = r'D:\dev\VLM-EQ\datasets\findingemo\findingemo_images'
-output_csv_path = r'D:\dev\VLM-EQ\datasets\findingemo\findingemo_annotations.csv'
+output_dir = r"D:\dev\VLM-EQ\datasets\findingemo\findingemo_images"
+output_csv_path = r"D:\dev\VLM-EQ\datasets\findingemo\findingemo_annotations.csv"
 
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)

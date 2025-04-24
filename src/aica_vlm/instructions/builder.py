@@ -1,8 +1,11 @@
-import template as T
-from ..emotion_model import EmotionModel
 import os
 import random
+
 import pandas as pd
+import template as T
+
+from ..emotion_model import EmotionModel
+
 
 class InstructionBuilder:
     def __init__(self, instruction_type, dataset_path, emotion_model: str):
@@ -32,21 +35,17 @@ class InstructionBuilder:
             folder = row.get("img_folder", "")
             img_path = os.path.join(self.image_root_dir, folder, img_name)
             template = random.choice(self.instruction_templates)
-            full_prompt = template.format(image_path=img_path) + " " + self.instruction_tail
+            full_prompt = (
+                template.format(image_path=img_path) + " " + self.instruction_tail
+            )
             label = self._get_label_from_row(row)
 
             sample = {
                 "messages": [
-                    {
-                        "role": "user",
-                        "content": f"<image>{full_prompt}"
-                    },
-                    {
-                        "role": "assistant",
-                        "content": self._format_label(label)
-                    }
+                    {"role": "user", "content": f"<image>{full_prompt}"},
+                    {"role": "assistant", "content": self._format_label(label)},
                 ],
-                "images": [img_path]
+                "images": [img_path],
             }
 
             self.add_instruction(sample)
@@ -55,7 +54,7 @@ class InstructionBuilder:
         if self.emotion_model.model_name == "VA":
             return {
                 "valence": float(row["emotion_v"]),
-                "arousal": float(row["emotion_a"])
+                "arousal": float(row["emotion_a"]),
             }
         else:
             return row["emotion_cat"]
@@ -63,5 +62,5 @@ class InstructionBuilder:
     def _format_label(self, label):
         if isinstance(label, dict):
             return f"Valence: {label['valence']:.2f}, Arousal: {label['arousal']:.2f}"
-        else: 
+        else:
             return label

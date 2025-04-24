@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aica-vlm"
+version = "0.1.0"
+description = "CLI tools for AICA-VLM benchmark"
+dependencies = [
+  "typer[all]",
+  "pandas",
+  "PyYAML"
+]
+
+[project.scripts]
+aica-vlm = "aica_vlm.cli:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

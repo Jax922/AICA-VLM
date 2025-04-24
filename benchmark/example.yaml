@@ -1,0 +1,28 @@
+# configs/example_task.yaml
+
+task:
+  name: "emotion_understanding_fer"
+  type: "fer_classification"
+  emotion_model: "26-class"  # or "VA"
+  description: "Facial emotion classification on AffectNet with 26-class labels"
+
+dataset:
+  name: "AffectNet"
+  path: "/path/to/user/downloaded/affectnet"
+  subset_selection: "use_emotion_labels"
+
+instruction:
+  set: "default_fer"
+  instruction_mode: "fixed"  # or "randomized", "custom"
+
+adaptation:
+  model: "openai/gpt-4-vision"
+  method: "zero-shot"  # or "few-shot", "cot", etc.
+
+metrics:
+  classification:
+    - accuracy
+    - f1_macro
+  logging:
+    save_json: true
+    output_path: "outputs/run_001/"

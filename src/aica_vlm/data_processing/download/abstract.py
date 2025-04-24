@@ -1,9 +1,10 @@
-#Abstract
-#https://www.imageemotion.org
+# Abstract
+# https://www.imageemotion.org
 
-import pandas as pd
 import os
 import shutil
+
+import pandas as pd
 
 
 def process_abstract_data(input_csv_path, output_csv_path, image_folder, output_dir):
@@ -21,7 +22,16 @@ def process_abstract_data(input_csv_path, output_csv_path, image_folder, output_
     df = pd.read_csv(input_csv_path)
     print(df.columns)
 
-    emotion_columns = ['Amusement', 'Anger', 'Awe', 'Content', 'Disgust', 'Excitement', 'Fear', 'Sad']
+    emotion_columns = [
+        "Amusement",
+        "Anger",
+        "Awe",
+        "Content",
+        "Disgust",
+        "Excitement",
+        "Fear",
+        "Sad",
+    ]
 
     # Initialize a list to store the processed data
     processed_data = []
@@ -44,7 +54,9 @@ def process_abstract_data(input_csv_path, output_csv_path, image_folder, output_
         dataset_source = "abstract_dataset"  # New column to indicate the dataset source
 
         # Append the processed row
-        processed_data.append([img_name, img_folder, max_emotion, emotion_v, emotion_a, dataset_source])
+        processed_data.append(
+            [img_name, img_folder, max_emotion, emotion_v, emotion_a, dataset_source]
+        )
 
         # Copy image to the target directory
         original_img_path = os.path.join(image_folder, img_name)
@@ -56,9 +68,17 @@ def process_abstract_data(input_csv_path, output_csv_path, image_folder, output_
         shutil.copy2(original_img_path, target_img_path)
 
     # Convert the processed data into a DataFrame
-    processed_df = pd.DataFrame(processed_data,
-                                columns=['img_name', 'img_folder', 'emotion_cat', 'emotion_v', 'emotion_a',
-                                         'dataset_source'])
+    processed_df = pd.DataFrame(
+        processed_data,
+        columns=[
+            "img_name",
+            "img_folder",
+            "emotion_cat",
+            "emotion_v",
+            "emotion_a",
+            "dataset_source",
+        ],
+    )
 
     # Save the new DataFrame to a CSV file
     processed_df.to_csv(output_csv_path, index=False)
@@ -67,11 +87,14 @@ def process_abstract_data(input_csv_path, output_csv_path, image_folder, output_
 
 
 if __name__ == "__main__":
-    input_csv_path = 'ABSTRACT_groundTruth.csv'  # Path to input CSV file
-    output_csv_path = './datasets/Abstract/Abstract.csv'  # Path to save the processed CSV file
-    image_folder = r'C:\Users\yu_da\Desktop\VLM data\download\testImages_abstract' # Path to the folder containing images
-    output_dir = './datasets/Abstract/processed_images'  # Directory to store processed images
+    input_csv_path = "ABSTRACT_groundTruth.csv"  # Path to input CSV file
+    output_csv_path = (
+        "./datasets/Abstract/Abstract.csv"  # Path to save the processed CSV file
+    )
+    image_folder = r"C:\Users\yu_da\Desktop\VLM data\download\testImages_abstract"  # Path to the folder containing images
+    output_dir = (
+        "./datasets/Abstract/processed_images"  # Directory to store processed images
+    )
 
     # Run the function to process the dataset
     process_abstract_data(input_csv_path, output_csv_path, image_folder, output_dir)
-

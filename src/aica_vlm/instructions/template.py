@@ -1,4 +1,3 @@
-
 # Prompt: You are helping build a benchmark for evaluating vision-language models' understanding of emotion.  Task: Classify the facial expression of the person shown in an image. The emotion can be represented in three label sets: 6 basic emotions, 8 emotions, and 26 fine-grained emotions. Please generate 50 different natural instructions that ask the model to classify the emotion shown in an image, varying the phrasing while keeping the meaning the same. The instructions should be clear and specific, and avoid unnecessary complexity. Output a python array list.
 EU_FER_instructions = [
     "What facial expression is the person showing in this image?",
@@ -50,7 +49,7 @@ EU_FER_instructions = [
     "How would you emotionally interpret the person’s face?",
     "Identify the likely emotion from the person’s facial features.",
     "Can you recognize the facial expression in this image?",
-    "Provide your classification of this facial expression."
+    "Provide your classification of this facial expression.",
 ]
 
 
@@ -105,9 +104,8 @@ EU_people_in_wild = [
     "Judge the person’s emotion based on their expression and pose.",
     "Classify the emotion according to the facial expression in the image.",
     "What’s the emotional impression conveyed by the person in the image?",
-    "What emotion is captured in the image of this individual?"
+    "What emotion is captured in the image of this individual?",
 ]
-
 
 
 # Prompt: You are helping build a benchmark for evaluating vision-language models' understanding of emotion.  Task: Classify the emotion that the image evokes in a human observer. The emotion can be represented in three label sets: 6 basic emotions, 8 emotions, and 26 fine-grained emotions. Please generate 50 different natural instructions that ask the model to classify the emotion shown in an image, varying the phrasing while keeping the meaning the same. The instructions should be clear and specific, and avoid unnecessary complexity. Output a Python array list.
@@ -162,29 +160,30 @@ EU_observer_emotion = [
     "Name the emotional response that best matches this image.",
     "Evaluate the image and choose the emotion it most likely elicits.",
     "Pick the emotion that represents how this image is perceived emotionally.",
-    "Based on the content, what emotion would this image trigger in a person?"
+    "Based on the content, what emotion would this image trigger in a person?",
 ]
-
 
 
 DES_tail = "Respond with two numerical values: valence and arousal. Valence measures emotional pleasantness, and arousal measures emotional intensity. Each value should be between -1 and 1, rounded to two decimal places. Use the following format: Valence: <value>, Arousal: <value>"
 
 CES_tail = "Please provide the emotion label for the image. The label should be one of the following: "
 
+
 def build_CES_tail(labels):
     """
     Build the CES tail string with the provided labels.
-    
+
     Args:
         labels (list): List of emotion labels to include in the tail.
-    
+
     Returns:
         str: Formatted tail string for CES.
     """
     return f"Please provide the emotion label for the image. The label should be one of the following: {', '.join(labels)}. Using this format: <label>."
 
+
 instruction_templates = {
     "EU_FER_instructions": EU_FER_instructions,
     "EU_people_in_wild": EU_people_in_wild,
-    "EU_observer_emotion": EU_observer_emotion
+    "EU_observer_emotion": EU_observer_emotion,
 }

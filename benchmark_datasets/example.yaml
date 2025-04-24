@@ -1,0 +1,11 @@
+task_name: emotion_understanding_people_in_the_wild
+total_num: 2000
+output_dir: D:\dev\VLM-EQ\datasets\benchmark\emotion_understanding_people_in_the_wild\
+
+datasets:
+  - name: emotic
+    path: D:\dev\VLM-EQ\datasets\EMOTIC
+    emotion_class: 26
+    has_VA: true
+    has_reasoning: false
+    weight: 0.6

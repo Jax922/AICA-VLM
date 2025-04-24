@@ -175,3 +175,14 @@ cython_debug/
 
 
 datasets/
+
+# Python build
+build/
+dist/
+*.egg-info/
+
+
+# Data
+*.csv
+*.log
+.DS_Store
