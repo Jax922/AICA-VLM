@@ -2,15 +2,17 @@ import os
 import random
 
 import pandas as pd
-import template as T
 
-from ..emotion_model import EmotionModel
+from aica_vlm.emotion_model import EmotionModel
+
+from . import template as T
 
 
 class InstructionBuilder:
     def __init__(self, instruction_type, dataset_path, emotion_model: str):
         self.instruction_type = instruction_type
         self.instructions = []
+        self.dataset_path = dataset_path
         self.image_root_dir = os.path.join(dataset_path, "images")
         self.csv_file = os.path.join(dataset_path, "annotations.csv")
         self.emotion_model = EmotionModel(emotion_model)
@@ -28,16 +30,16 @@ class InstructionBuilder:
         return self.instructions
 
     def build(self):
+        print(f"Building instructions for {self.instruction_type}...")
         df = pd.read_csv(self.csv_file)
+        print(f"Loaded {len(df)} rows from {self.csv_file}")
 
         for idx, row in df.iterrows():
             img_name = row["img_name"]
             folder = row.get("img_folder", "")
-            img_path = os.path.join(self.image_root_dir, folder, img_name)
+
             template = random.choice(self.instruction_templates)
-            full_prompt = (
-                template.format(image_path=img_path) + " " + self.instruction_tail
-            )
+            full_prompt = template + " " + self.instruction_tail
             label = self._get_label_from_row(row)
 
             sample = {
@@ -45,10 +47,19 @@ class InstructionBuilder:
                     {"role": "user", "content": f"<image>{full_prompt}"},
                     {"role": "assistant", "content": self._format_label(label)},
                 ],
-                "images": [img_path],
+                "images": [img_name],
             }
 
             self.add_instruction(sample)
+
+        output_file = os.path.join(self.dataset_path, "instruction.json")
+
+        import json
+
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+        with open(output_file, "w") as f:
+            json.dump(self.instructions, f, indent=4)
+        print(f"Instructions saved to {output_file}")
 
     def _get_label_from_row(self, row):
         if self.emotion_model.model_name == "VA":

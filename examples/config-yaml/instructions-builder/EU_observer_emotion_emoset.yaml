@@ -1,0 +1,5 @@
+# Instruction configuration file
+
+instruction_type: EU_observer_emotion
+dataset_path: datasets/benchmark/EU_observer_emotion_emoset
+emotion_model: 8_expanded

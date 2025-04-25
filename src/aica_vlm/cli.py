@@ -9,6 +9,7 @@ from aica_vlm.dataset import (
     build_balanced_benchmark_dataset,
     build_random_benchmark_dataset,
 )
+from aica_vlm.instructions import InstructionBuilder
 
 app = typer.Typer(help="AICA-VLM benchmark CLI")
 
@@ -50,8 +51,25 @@ def build_dataset(
 def build_instruction(
     config: str = typer.Argument(..., help="YAML config path for instruction task"),
 ):
-    """⚠️ [To be implemented] Build instructions from a dataset."""
-    typer.echo(f"[TODO] Will build instructions from config: {config}")
+    """Build instructions from a benchmark dataset using templates and labels."""
+    with open(config, "r") as f:
+        cfg = yaml.safe_load(f)
+
+    instruction_type = cfg["instruction_type"]
+    dataset_path = cfg["dataset_path"]
+    emotion_model = cfg["emotion_model"]
+
+    typer.echo(f"Building instructions for: {instruction_type}")
+    typer.echo(f"Dataset path: {dataset_path}")
+    typer.echo(f"Emotion model: {emotion_model}")
+
+    builder = InstructionBuilder(
+        instruction_type=instruction_type,
+        dataset_path=dataset_path,
+        emotion_model=emotion_model,
+    )
+    builder.build()
+    typer.echo("Instruction generation completed.")
 
 
 app.add_typer(dataset_app, name="build-dataset")
