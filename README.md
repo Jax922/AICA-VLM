@@ -57,8 +57,8 @@ pip install -r requirements.txt
 To contribute or extend this project, follow the development setup below:
 ```bash
 # 1. Create and activate a virtual environment (recommended)
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+conda create -n aica-vlm
+conda activate aica-vlm
 
 # 2. Install core and dev dependencies
 pip install -r requirements.txt -r requirements-dev.txt
