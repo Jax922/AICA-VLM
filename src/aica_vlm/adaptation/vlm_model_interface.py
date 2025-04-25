@@ -17,17 +17,11 @@ class VLMModelInterface(ABC):
     def infer(self, inputs):
         """Perform inference"""
         pass
-
+    
     @abstractmethod
-    def postprocess_output(self, outputs):
-        """Postprocess the output"""
-        pass
-
     def predict_with_prompt(self, prompt: dict):
         """Perform inference using the unified prompt"""
-        inputs = self.preprocess_prompt(prompt)
-        outputs = self.infer(inputs)
-        return self.postprocess_output(outputs)
+        pass
     
 class VLMModelFactory(ABC):
     """Abstract factory class for creating different VLM model instances"""
