@@ -1,0 +1,10 @@
+task_name: EU_observer_emotion_findingemo
+total_num: all
+output_dir: ./datasets/benchmark/findingemo
+
+datasets:
+  - name: Findingemo
+    path: ./datasets/findingemo_images
+    emotion_class: 24
+    has_VA: true
+    has_reasoning: false

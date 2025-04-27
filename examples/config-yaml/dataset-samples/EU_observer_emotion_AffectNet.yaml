@@ -1,0 +1,10 @@
+task_name: EU_observer_emotion_AffectNet
+total_num: all
+output_dir: ./datasets/benchmark/affectnet
+
+datasets:
+  - name: AffectNet
+    path: ./datasets/AffectNet
+    emotion_class: 8
+    has_VA: false
+    has_reasoning: false

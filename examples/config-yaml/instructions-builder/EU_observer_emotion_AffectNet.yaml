@@ -1,0 +1,5 @@
+# Instruction configuration file
+
+instruction_type: EU_FER_instructions
+dataset_path: datasets/benchmark/affectnet
+emotion_model: 7

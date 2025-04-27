@@ -1,0 +1,10 @@
+task_name: EU_observer_emotion_emotion6
+total_num: all
+output_dir: ./datasets/benchmark/emotion6
+
+datasets:
+  - name: Emotion6
+    path: ./datasets/Emotion6
+    emotion_class: 6
+    has_VA: false
+    has_reasoning: false

@@ -1,0 +1,10 @@
+task_name: EU_observer_emotion_artphoto
+total_num: all
+output_dir: ./datasets/benchmark/artphoto
+
+datasets:
+  - name: Artphoto
+    path: ./datasets/Artphoto
+    emotion_class: 8
+    has_VA: false
+    has_reasoning: false

@@ -1,0 +1,10 @@
+task_name: EU_observer_emotion_abstract
+total_num: all
+output_dir: ./datasets/benchmark/abstract
+
+datasets:
+  - name: Abstract
+    path: ./datasets/Abstract
+    emotion_class: 8
+    has_VA: false
+    has_reasoning: false

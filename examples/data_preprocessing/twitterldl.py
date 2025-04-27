@@ -1,117 +1,119 @@
-# FlickrLDL dataset
+# TwitterLDL dataset
 # https://github.com/sherleens/EmotionDistributionLearning/blob/57eb79073e7750132e464292ac890b0dc4e02db2/README.md#download-dataset-lmdb
 
+
+import lmdb
 import os
-import shutil
+import csv
+import io
+from tqdm import tqdm
+from PIL import Image
+import numpy as np
 
-import h5py
-import pandas as pd
+from google.protobuf import descriptor_pb2
+from google.protobuf.message import DecodeError
+from google.protobuf import message_factory
+from google.protobuf import descriptor_pool
 
+pool = descriptor_pool.Default()
+file_descriptor_proto = descriptor_pb2.FileDescriptorProto()
+file_descriptor_proto.name = 'datum.proto'
+file_descriptor_proto.package = 'caffe'
 
-def process_twitterldl_data(
-    mat_path, output_csv_path, final_csv_path, image_root_dir, output_dir
-):
-    """
-    Process the Twitter LDL dataset, extract annotation data, and organize the images.
+message_type = file_descriptor_proto.message_type.add()
+message_type.name = 'Datum'
 
-    Parameters:
-    - mat_path: Path to the .mat file.
-    - output_csv_path: Path to save intermediate CSV containing emotion votes.
-    - final_csv_path: Path to save the final CSV with processed annotations.
-    - image_root_dir: Root directory containing the images.
-    - output_dir: Directory to save the organized images.
-    """
-    # Open the .mat file
-    with h5py.File(mat_path, "r") as f:
-        vote = f["vote"][:]
-        vote = (
-            vote.T
-        )  # Transposed vote shape is (11150, 8), each row corresponds to an image, each column corresponds to an emotion category
+fields = [
+    ('int32', 'channels', 1),
+    ('int32', 'height', 2),
+    ('int32', 'width', 3),
+    ('bytes', 'data', 4),
+    ('repeated float', 'float_data', 6),
+    ('bool', 'encoded', 7)
+]
 
-        # Create DataFrame for the emotion categories
-        data = {
-            "anger": vote[:, 0],
-            "amusement": vote[:, 1],
-            "awe": vote[:, 2],
-            "contentment": vote[:, 3],
-            "disgust": vote[:, 4],
-            "excitement": vote[:, 5],
-            "fear": vote[:, 6],
-            "sadness": vote[:, 7],
-        }
+for type_str, name, number in fields:
+    field = message_type.field.add()
+    field.name = name
+    field.number = number
+    field.label = 1 if not type_str.startswith('repeated') else 3
+    field.type = {
+        'int32': 5,
+        'bytes': 12,
+        'float': 2,
+        'bool': 8
+    }[type_str.replace('repeated ', '')]
 
-        # Create DataFrame for vote data and save to CSV
-        df = pd.DataFrame(data)
-        df.to_csv(output_csv_path, index=False)
-        print(f"Data has been saved to: {output_csv_path}")
+file_desc = pool.Add(file_descriptor_proto)
+Datum = message_factory.MessageFactory(pool).GetPrototype(file_desc.message_types_by_name['Datum'])
 
-    # Create output directory if not exists
-    os.makedirs(output_dir, exist_ok=True)
+lmdb_path = "/home/pci/yxr/AICA-VLM/datasets/TwitterLDL/TwitterLDL/train_twitterldl_split1_lmdb"
+output_image_dir = "output_images"
+output_csv_path = "twitterldl_final.csv"
+dataset_source = "TwitterLDL"
+img_folder = "images" 
 
-    # Read the CSV for further processing
-    df = pd.read_csv(output_csv_path)
+os.makedirs(output_image_dir, exist_ok=True)
 
-    # Emotion label list
-    emotion_labels = [
-        "anger",
-        "amusement",
-        "awe",
-        "contentment",
-        "disgust",
-        "excitement",
-        "fear",
-        "sadness",
-    ]
+# === Mikel's Emotion ===
+emotion_names = [
+    "Amusement",
+    "Contentment",
+    "Awe",
+    "Excitement",
+    "Fear",
+    "Sadness",
+    "Disgust",
+    "Anger"
+]
 
-    # Create an empty DataFrame to store processed data
-    processed_data = {
-        "img_name": [f"{index + 1}.jpg" for index in range(len(df))],
-        # Create each image name in the format '1.jpg', '2.jpg', ...
-        "img_folder": ["LJCAI7"] * len(df),  # Fixed as 'LJCAI7'
-        "emotion_cat": [],
-        "emotion_v": [""] * len(df),  # Leave empty
-        "emotion_a": [""] * len(df),  # Leave empty
-        "dataset_source": ["Twitter_LDL"] * len(df),  # Fixed as 'Twitter_LDL'
-    }
+# === LMDB ===
+env = lmdb.open(lmdb_path, readonly=True, lock=False)
+txn = env.begin()
+cursor = txn.cursor()
 
-    # Iterate through each row to find the emotion category corresponding to the highest probability
-    for index, row in df.iterrows():
-        vote = row[emotion_labels].values
-        max_index = vote.argmax()  # Get the index of the maximum value
-        emotion_cat = emotion_labels[max_index]  # Get the corresponding emotion label
+with open(output_csv_path, "w", newline="") as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["img_name", "img_folder", "emotion_cat", "emotion_v", "emotion_a", "source_dataset"])
 
-        # Add to processed data
-        processed_data["emotion_cat"].append(emotion_cat)
-
-        # Copy images to the target folder
-        img_name = f"{index + 1}.jpg"
-        original_img_path = os.path.join(image_root_dir, img_name)
-
-        if not os.path.exists(original_img_path):
-            print(f"[Missing] {original_img_path}")
+    for key, value in tqdm(cursor, desc="Parsing LMDB"):
+        try:
+            datum = Datum()
+            datum.ParseFromString(value)
+        except DecodeError:
+            print(f"Failed to decode key: {key}")
             continue
 
-        target_img_path = os.path.join(output_dir, img_name)
-        shutil.copy2(original_img_path, target_img_path)
+        try:
+            if datum.encoded:
+                img = Image.open(io.BytesIO(datum.data)).convert("RGB")
+            else:
+                arr = np.frombuffer(datum.data, dtype=np.uint8).reshape(datum.channels, datum.height, datum.width)
+                img = Image.fromarray(np.transpose(arr, (1, 2, 0)))
+        except Exception as e:
+            print(f"Image decode error: {e}")
+            continue
 
-    # Create a new DataFrame for the processed data
-    processed_df = pd.DataFrame(processed_data)
+        key_str = key.decode("utf-8") if isinstance(key, bytes) else str(key)
+        img_filename = f"{key_str}.jpg"
+        img_path = os.path.join(output_image_dir, img_filename)
+        img.save(img_path)
 
-    # Save the processed data to the final CSV file
-    processed_df.to_csv(final_csv_path, index=False)
-    print(f"Data has been processed and saved to: {final_csv_path}")
+        probs = list(datum.float_data)
+        if not probs or len(probs) != 8:
+            print(f"⚠️ Invalid float_data for {img_filename}")
+            continue
 
+        max_idx = int(np.argmax(probs))
+        emotion_cat = emotion_names[max_idx]
 
-if __name__ == "__main__":
-    mat_path = r"./datasets/Twitter_LDL/twitterldl_config.mat"
-    output_csv_path = r"./datasets/Twitter_LDL/output.csv"
-    final_csv_path = r"./datasets/Twitter_LDL/Twitter_LDL_annotation.csv"
-    image_root_dir = (
-        r"./datasets/Twitter_LDL/images"  # Specify the actual image directory
-    )
-    output_dir = r"./datasets/Twitter_LDL/processed_images"  # Specify the directory to store processed images
+        writer.writerow([
+            img_filename,
+            img_folder,
+            emotion_cat,
+            "",  # emotion_v
+            "",  # emotion_a
+            dataset_source
+        ])
 
-    # Run the function to process the dataset
-    process_twitterldl_data(
-        mat_path, output_csv_path, final_csv_path, image_root_dir, output_dir
-    )
+print(f"\nDone! Images saved to: {output_image_dir}, Labels saved to: {output_csv_path}")

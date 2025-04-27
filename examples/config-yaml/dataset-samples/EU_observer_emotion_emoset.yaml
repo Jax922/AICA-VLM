@@ -1,10 +1,10 @@
 task_name: EU_observer_emotion_emoset
 total_num: 2000
-output_dir: D:\dev\VLM-EQ\datasets\benchmark\EU_observer_emotion_emoset\
+output_dir: ./datasets/benchmark/emoset
 
 datasets:
   - name: emoset
-    path: D:\dev\VLM-EQ\datasets\emoset
+    path: ./datasets/emoset
     emotion_class: 8
     has_VA: false
     has_reasoning: false

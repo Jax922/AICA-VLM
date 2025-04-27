@@ -1,0 +1,10 @@
+task_name: EU_observer_emotion_emotic
+total_num: 2000
+output_dir: ./datasets/benchmark/emotic
+
+datasets:
+  - name: EMOTIC
+    path: ./datasets/EMOTIC
+    emotion_class: 26
+    has_VA: false
+    has_reasoning: false

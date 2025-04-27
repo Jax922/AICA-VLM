@@ -1,6 +1,7 @@
 import os
 import shutil
 from abc import ABC, abstractmethod
+from typing import Union
 
 import pandas as pd
 
@@ -94,7 +95,10 @@ class GenericDataset(BaseDataset):
 
 
 def build_random_benchmark_dataset(
-    dataset_cfgs: list, total_num: int, output_dir: str, random_state: int = 42
+    dataset_cfgs: list,
+    total_num: Union[int, str],
+    output_dir: str,
+    random_state: int = 42,
 ):
     print(f"Building benchmark dataset with unified random sampling")
     print(f"Target: {total_num} images")
@@ -121,14 +125,21 @@ def build_random_benchmark_dataset(
     )
     print(f"Total unique images after merge: {len(merged_df)}")
 
-    if len(merged_df) < total_num:
-        raise ValueError(
-            f"Only {len(merged_df)} unique images available, cannot satisfy total_num={total_num}"
-        )
+    is_all = isinstance(total_num, str) and total_num.lower() == "all"
 
-    sampled_df = merged_df.sample(n=total_num, random_state=random_state).reset_index(
-        drop=True
-    )
+    if not is_all:
+        total_num = int(total_num)
+        if len(merged_df) < total_num:
+            raise ValueError(
+                f"Only {len(merged_df)} unique images available, cannot satisfy total_num={total_num}"
+            )
+        sampled_df = merged_df.sample(
+            n=total_num, random_state=random_state
+        ).reset_index(drop=True)
+    else:
+        sampled_df = merged_df
+        total_num = len(sampled_df)
+        print(f"Using all {total_num} images without sampling.")
 
     os.makedirs(os.path.join(output_dir, "images"), exist_ok=True)
 
@@ -141,7 +152,7 @@ def build_random_benchmark_dataset(
     sampled_df.drop(columns=["img_path"], inplace=True)
     sampled_df.to_csv(os.path.join(output_dir, "annotations.csv"), index=False)
 
-    print(f"Done! {total_num} random samples saved to {output_dir}")
+    print(f"✅ Done! {total_num} samples saved to {output_dir}")
 
 
 def build_balanced_benchmark_dataset(

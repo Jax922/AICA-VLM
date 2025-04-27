@@ -1,8 +1,17 @@
 class EmotionModel:
     def __init__(self, model_name="6_basic"):
         self.models = {
-            "6_basic": ["Joy", "Surprise", "Anger", "Disgust", "Fear", "Sadness"],
-            "8_expanded": [
+            "6": ["Joy", "Surprise", "Anger", "Disgust", "Fear", "Sadness"],
+            "7": [
+                "Happiness",
+                "Sadness",
+                "Surprise",
+                "Fear",
+                "Disgust",
+                "Anger",
+                "Contempt",
+            ],
+            "8": [
                 "Amusement",
                 "Awe",
                 "Contentment",
@@ -12,7 +21,33 @@ class EmotionModel:
                 "Fear",
                 "Sadness",
             ],
-            "26_fine_grained": [
+            "24": [
+                "joy",
+                "serenity",
+                "ecstasy",
+                "trust",
+                "acceptance",
+                "admiration",
+                "fear",
+                "apprehension",
+                "terror",
+                "surprise",
+                "distraction",
+                "amazement",
+                "sadness",
+                "pensiveness",
+                "grief",
+                "disgust",
+                "boredom",
+                "loathing",
+                "anger",
+                "annoyance",
+                "rage",
+                "anticipation",
+                "interest",
+                "vigilance",
+            ],
+            "26": [
                 "Affection",
                 "Anger",
                 "Annoyance",

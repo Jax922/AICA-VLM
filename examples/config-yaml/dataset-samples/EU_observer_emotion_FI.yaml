@@ -1,0 +1,10 @@
+task_name: EU_observer_emotion_fi
+total_num: 2000
+output_dir: ./datasets/benchmark/fi
+
+datasets:
+  - name: FI
+    path: ./datasets/FI
+    emotion_class: 6
+    has_VA: false
+    has_reasoning: false
