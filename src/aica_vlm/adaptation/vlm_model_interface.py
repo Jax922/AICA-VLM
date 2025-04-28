@@ -9,18 +9,13 @@ class VLMModelInterface(ABC):
         pass
 
     @abstractmethod
-    def preprocess_prompt(self, prompt: dict):
+    def process_instruction(self, instruction: dict):
         """Convert the unified prompt into the model's input format"""
         pass
 
     @abstractmethod
-    def infer(self, inputs):
+    def inference(self, instruction: dict):
         """Perform inference"""
-        pass
-    
-    @abstractmethod
-    def predict_with_prompt(self, prompt: dict):
-        """Perform inference using the unified prompt"""
         pass
     
 class VLMModelFactory(ABC):
