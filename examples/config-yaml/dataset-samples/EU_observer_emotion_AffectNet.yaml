@@ -1,5 +1,5 @@
 task_name: EU_observer_emotion_AffectNet
-total_num: all
+total_num: 1000
 output_dir: ./datasets/benchmark/affectnet
 
 datasets:

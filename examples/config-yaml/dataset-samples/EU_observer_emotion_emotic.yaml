@@ -1,5 +1,5 @@
 task_name: EU_observer_emotion_emotic
-total_num: 2000
+total_num: 1000
 output_dir: ./datasets/benchmark/emotic
 
 datasets:

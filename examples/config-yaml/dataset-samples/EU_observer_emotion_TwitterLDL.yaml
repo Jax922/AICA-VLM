@@ -1,5 +1,5 @@
 task_name: EU_observer_emotion_twitterldl
-total_num: 2000
+total_num: 1000
 output_dir: ./datasets/benchmark/twitterldl
 
 datasets:
