@@ -1,6 +1,8 @@
+import sys
 import torch
 from PIL import Image
-from src.aica_vlm.adaptation.vlm_model_interface import VLMModelInterface, VLMModelFactory
+
+from aica_vlm.adaptation.vlm_model_interface import VLMModelInterface, VLMModelFactory
 
 class MiniCPMV(VLMModelInterface):
     def __init__(self, model_name: str):
@@ -20,7 +22,7 @@ class MiniCPMV(VLMModelInterface):
         """
         from transformers import AutoModel, AutoTokenizer
 
-        if "MiniCPM-V" in self.model_name:
+        if "MiniCPM-V" or "MiniCPM-o" in self.model_name:
             self.model = AutoModel.from_pretrained(
                 self.model_name,
                 trust_remote_code=True,
@@ -31,67 +33,32 @@ class MiniCPMV(VLMModelInterface):
         else:
             raise ValueError(f"Unrecognized model name: {self.model_name}")
 
-    def preprocess_prompt(self, instructions: list[dict]):
-        """
-        Preprocess the unified prompt into the model's input format.
-
-        Args:
-            instructions (list[dict]): A list of unified prompts.
-
-        Returns:
-            list[dict]: Preprocessed messages ready for inference.
-        """
-        messages = []
-        for sample in instructions:
-            user_content = sample["messages"][0]["content"]
-            img_path = sample["images"][0]
-
-            # Load and preprocess the image
-            image = Image.open(img_path).convert("RGB")
-
-            # Prepare the message
-            message = {"role": "user", "content": [image, user_content]}
-            messages.append(message)
-
-        return messages
-
-    def infer(self, inputs):
-        """
-        Perform inference on the preprocessed inputs.
-
-        Args:
-            inputs (list[dict]): Preprocessed messages.
-
-        Returns:
-            list[str]: Decoded output texts.
-        """
-        results = []
-        for msgs in inputs:
-            response = self.model.chat(
-                image=None,  # MiniCPM-V does not require image tensors
-                msgs=msgs,
-                tokenizer=self.tokenizer,
-            )
-            results.append(response)
-        return results
-
-    def predict_with_prompt(self, instructions: list[dict]):
-        """
-        Perform inference using the unified prompt.
-
-        Args:
-            instructions (list[dict]): A list of unified prompts.
-
-        Returns:
-            list[str]: Decoded output texts.
-        """
-        # Preprocess the prompt
-        inputs = self.preprocess_prompt(instructions)
-
-        # Perform inference
-        output_texts = self.infer(inputs)
-        return output_texts
-
+    def process_instruction(self, instruction: dict):
+        user_content = instruction["messages"][0]["content"]
+        img_path = instruction["images"][0]
+        
+        # Load and preprocess the image
+        image = Image.open(img_path).convert("RGB")
+        
+        # Prepare the message
+        message = [{"role": "user", "content": [image, user_content]}]
+        
+        return message
+        
+    def inference(self, instruction: dict):
+        
+        message = self.process_instruction(instruction)
+        
+        output_text = self.model.chat(
+            image=None,
+            msgs=message,
+            tokenizer=self.tokenizer
+        )
+        
+        return output_text
+    
+    def batch_inference(self, instructions: list[dict]):
+        pass
 
 class MiniCPMVFactory(VLMModelFactory):
     def __init__(self, model_name: str):
@@ -116,29 +83,22 @@ class MiniCPMVFactory(VLMModelFactory):
 
 
 if __name__ == '__main__':
-    from src.aica_vlm.instructions.builder import InstructionBuilder
 
-    # Initialize InstructionBuilder
-    instruction_builder = InstructionBuilder(
-        instruction_type="CES",  # Specify template type
-        dataset_path="./datasets/ArtEmis",  # Dataset path
-        emotion_model="CES"  # Emotion model type
-    )
-
-    # Build instructions
-    instruction_builder.build()
-    instructions = instruction_builder.get_instructions()
+    import json
+    with open('/public/home/202320163218/yxr_code/LLM_Workspace/AICA-VLM/datasets/emoset/instruction.json', 'r', encoding='utf-8') as f:
+        instructions = json.load(f)
 
     # Specify the model name
-    model_name = "openbmb/MiniCPM-V-2_6"
+    model_name = '/public/home/202320163218/yxr_code/LLM_Workspace/AICA-VLM/models/openbmb/MiniCPM-V-2_6'
 
     # Create the model using the factory
     minicpm_factory = MiniCPMVFactory(model_name)
     minicpm_model = minicpm_factory.create_model()
-
-    # Perform inference on the first 5 instructions
-    results = minicpm_model.predict_with_prompt(instructions[:5])
-
-    # Print the results
-    for idx, result in enumerate(results):
-        print(f"Result {idx + 1}: {result}")
+    
+    for instruction in instructions:        
+        try:
+            result = minicpm_model.inference(instruction)
+        except Exception as e:
+            continue
+        print(result)
+        
