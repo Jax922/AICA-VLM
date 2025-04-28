@@ -1,4 +1,6 @@
+import json
 import sys
+from typing import Dict, List, Optional
 
 from qwen_vl_utils import process_vision_info
 
@@ -6,12 +8,11 @@ from aica_vlm.adaptation.vlm_model_interface import VLMModelFactory, VLMModelInt
 
 
 class QwenVL(VLMModelInterface):
+    """Implementation of VLMModelInterface for Qwen Vision-Language models."""
+
     def __init__(self, model_type: str, model_path: str):
         """
-        Initialize QwenVL model.
-
-        Args:
-            model_name (str): Model name, e.g., "Qwen/Qwen2-VL-7B-Instruct" or "Qwen/Qwen2.5-VL-7B-Instruct".
+        Initialize QwenVL model instance.
         """
         self.model_path = model_path
         self.model_type = model_type
@@ -20,11 +21,13 @@ class QwenVL(VLMModelInterface):
         self.model = None
         self.processor = None
 
-    def load_model(self):
+    def load_model(self) -> None:
         """
-        Dynamically load the model and processor based on the model name.
+        Dynamically load model and processor based on model name.
+
         Raises:
             ValueError: If the model name is not recognized.
+            ImportError: If required dependencies are missing.
         """
         if "Qwen2.5-VL" == self.model_type:
             from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
@@ -72,21 +75,21 @@ class QwenVL(VLMModelInterface):
     def inference(self, instruction: dict):
         message = self.process_instruction(instruction)
 
-        # Preparation for inference
+        # Prepare inputs
         text = self.processor.apply_chat_template(
             message, tokenize=False, add_generation_prompt=True
         )
         image_inputs, video_inputs = process_vision_info(message)
+
         inputs = self.processor(
             text=[text],
             images=image_inputs,
             videos=video_inputs,
             padding=True,
             return_tensors="pt",
-        )
-        inputs = inputs.to("cuda")
+        ).to("cuda")
 
-        # Inference: Generation of the output
+        # Generate output
         generated_ids = self.model.generate(**inputs, max_new_tokens=128)
         generated_ids_trimmed = [
             out_ids[len(in_ids) :]
@@ -100,13 +103,19 @@ class QwenVL(VLMModelInterface):
 
         return output_text
 
-    def batch_inference(self, instructions: list[dict]):
-        messages = []
-        for instruction in instructions:
-            message = self.process_instruction(instruction)
-            messages.append(message)
+    def batch_inference(self, instructions: List[Dict]) -> List[str]:
+        """
+        Perform batched inference on multiple instructions.
 
-        # Generate text inputs for the processor
+        Args:
+            instructions: List of instruction dictionaries
+
+        Returns:
+            List of generated text outputs
+        """
+        messages = [self.process_instruction(inst) for inst in instructions]
+
+        # Prepare batch inputs
         texts = [
             self.processor.apply_chat_template(
                 msg, tokenize=False, add_generation_prompt=True
@@ -114,56 +123,43 @@ class QwenVL(VLMModelInterface):
             for msg in messages
         ]
 
-        # Process vision inputs (images and videos)
         image_inputs, video_inputs = process_vision_info(messages)
 
-        # Prepare inputs for the model
         inputs = self.processor(
             text=texts,
             images=image_inputs,
             videos=video_inputs,
             padding=True,
             return_tensors="pt",
-        )
+        ).to("cuda")
 
-        inputs = inputs.to("cuda")
-
-        # Generate predictions
+        # Generate outputs
         generated_ids = self.model.generate(**inputs, max_new_tokens=256)
-
-        # Trim the generated IDs to remove input tokens
-        generated_ids_trimmed = [
-            out_ids[len(in_ids) :]
-            for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+        generated_ids = [
+            out[len(inp) :] for inp, out in zip(inputs.input_ids, generated_ids)
         ]
 
-        # Decode the generated outputs
-        output_texts = self.processor.batch_decode(
-            generated_ids_trimmed,
-            skip_special_tokens=True,
-            clean_up_tokenization_spaces=False,
+        return self.processor.batch_decode(
+            generated_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
         )
-
-        return output_texts
 
 
 class QwenVLFactory(VLMModelFactory):
+    """Factory class for creating QwenVL model instances."""
+
     def __init__(self, model_type: str, model_path: str):
         """
-        Initialize QwenVL factory.
-
-        Args:
-            model_name (str): Model name, e.g., "Qwen/Qwen2-VL-7B-Instruct".
+        Initialize factory with model name.
         """
         self.model_type = model_type
         self.model_path = model_path
 
     def create_model(self) -> VLMModelInterface:
         """
-        Create a specific version of the QwenVL model instance.
+        Create and initialize a QwenVL model instance.
 
         Returns:
-            VLMModelInterface: An instance of the QwenVL model.
+            Initialized QwenVL model instance
         """
         model = QwenVL(self.model_type, self.model_path)
         model.load_model()
@@ -171,22 +167,18 @@ class QwenVLFactory(VLMModelFactory):
 
 
 if __name__ == "__main__":
-    import json
+    # Example usage
+    with open("datasets/abstract/instruction.json", "r", encoding="utf-8") as f:
+        instructions = json.load(f)
 
-    with open(
-        "/public/home/202320163218/yxr_code/LLM_Workspace/AICA-VLM/datasets/abstract/instruction.json",
-        "r",
-        encoding="utf-8",
-    ) as f:
-        instructions = json.load(f)  # 加载 JSON 数据
-
-    # Specify the model name
-    model_name = "/public/home/202320163218/yxr_code/LLM_Workspace/AICA-VLM/models/Qwen/Qwen2.5-VL-3B-Instruct"
-
-    # Create the model using the factory
-    qwen_factory = QwenVLFactory(model_name)
-    qwen_model = qwen_factory.create_model()
+    model_name = "Qwen/Qwen2.5-VL-3B-Instruct"
+    factory = QwenVLFactory(model_name)
+    model = factory.create_model()
 
     for instruction in instructions:
-        result = qwen_model.inference(instruction)
-        print(result)
+        try:
+            result = model.inference(instruction)
+            print(result)
+        except Exception as e:
+            print(f"Error processing instruction: {str(e)}")
+            continue
