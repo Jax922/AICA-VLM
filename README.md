@@ -80,3 +80,13 @@ aica-vlm build-dataset run benchmark_datasets/example.yaml --mode random
 ```
 
 * mode: random(default), balanced
+
+### Build Instruction
+```bash
+aica-vlm build-instruction run benchmark_datasets/example.yaml
+```
+
+### Run Evaluation or Benchmark
+```bash
+aica-vlm benchmark benchmark_datasets/example.yaml
+```
