@@ -9,8 +9,9 @@ tasks:
     instruction_file: ./datasets/benchmark/emoset/instruction.json
     image_folder: ./datasets/benchmark/emoset/images/
     output_result_path: ./output/qwen2.5VL/emoset.json
-    metrics: ["accuracy", "f1"]
+    metrics: EmotionClassificationMetrics
     generation_method: generate
+    maximum_instructions_num: 10
     additional_kwargs:
       temperature: 0.2
 
@@ -18,7 +19,8 @@ tasks:
     dataset_path: ./datasets/benchmark/artphoto
     instruction_file: ./datasets/benchmark/artphoto/instruction.json
     image_folder: ./datasets/benchmark/artphoto/images/
-    metrics: ["accuracy", "f1"]
+    metrics: EmotionClassificationMetrics
     generation_method: chat
+    maximum_instructions_num: 10
     additional_kwargs:
       temperature: 0.1

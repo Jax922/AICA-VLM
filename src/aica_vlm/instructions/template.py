@@ -179,7 +179,7 @@ def build_CES_tail(labels):
     Returns:
         str: Formatted tail string for CES.
     """
-    return f"Please provide the emotion label for the image. The label should be one of the following: {', '.join(labels)}. Using this format: <label>."
+    return f"Please provide the emotion label for the image. The label should be one of the following: {', '.join(labels)}. Using this format: label"
 
 
 instruction_templates = {

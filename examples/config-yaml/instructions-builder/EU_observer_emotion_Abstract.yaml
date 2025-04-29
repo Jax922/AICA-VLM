@@ -2,4 +2,4 @@
 
 instruction_type: EU_observer_emotion
 dataset_path: datasets/benchmark/abstract
-emotion_model: 8
+emotion_model: 8_cls

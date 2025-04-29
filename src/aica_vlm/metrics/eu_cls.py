@@ -1,24 +1,30 @@
-# src/metrics/eu_classification.py
-
-from sklearn.metrics import (
-    accuracy_score,
-    confusion_matrix,
-    f1_score,
-    top_k_accuracy_score,
-)
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 
 from .base import Metric
 
 
 class EmotionClassificationMetrics(Metric):
-    def compute(self, predictions, references, topk_preds=None, labels=None):
+    def compute(self, predictions, references):
+        normalized_predictions = [pred.strip().lower() for pred in predictions]
+        normalized_references = [ref.strip().lower() for ref in references]
+
+        binary_predictions = [
+            1 if pred in ref else 0
+            for pred, ref in zip(normalized_predictions, normalized_references)
+        ]
+        binary_references = [1] * len(references)
+
         result = {
-            "Accuracy": accuracy_score(references, predictions),
-            "Macro F1": f1_score(references, predictions, average="macro"),
-            "Confusion Matrix": confusion_matrix(references, predictions).tolist(),
+            "Accuracy": sum(binary_predictions) / len(binary_predictions),
+            "Macro F1": f1_score(
+                binary_references, binary_predictions, average="macro"
+            ),
+            "Weighted F1": f1_score(
+                binary_references, binary_predictions, average="weighted"
+            ),
+            "Confusion Matrix": confusion_matrix(
+                binary_references, binary_predictions
+            ).tolist(),
         }
-        if topk_preds is not None and labels is not None:
-            result["Top-k Accuracy"] = top_k_accuracy_score(
-                references, topk_preds, labels=labels
-            )
+
         return result

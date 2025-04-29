@@ -2,4 +2,4 @@
 
 instruction_type: EU_FER_instructions
 dataset_path: datasets/benchmark/affectnet
-emotion_model: 7
+emotion_model: 7_cls

@@ -2,4 +2,4 @@
 
 instruction_type: EU_people_in_wild
 dataset_path: datasets/benchmark/emotic
-emotion_model: 26
+emotion_model: 26_cls

@@ -188,3 +188,4 @@ dist/
 .DS_Store
 
 models/
+output/

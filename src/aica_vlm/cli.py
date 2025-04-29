@@ -5,6 +5,7 @@ import typer
 # from aica_vlm.instructions import build_instruction_set
 import yaml
 
+from aica_vlm.adaptation.run import run
 from aica_vlm.dataset import (
     build_balanced_benchmark_dataset,
     build_random_benchmark_dataset,
@@ -70,6 +71,33 @@ def build_instruction(
     )
     builder.build()
     typer.echo("Instruction generation completed.")
+
+
+# ========== Benchmark ==========
+@app.command("benchmark")
+def benchmark(
+    config: str = typer.Argument(..., help="Path to the YAML configuration file"),
+):
+    """
+    Run benchmark tasks based on the provided YAML configuration file.
+    """
+    try:
+        typer.echo(f"Loading benchmark configuration from: {config}")
+        with open(config, "r") as f:
+            cfg = yaml.safe_load(f)
+
+        # Validate configuration file
+        if not cfg:
+            typer.echo("Configuration file is empty or invalid.", err=True)
+            raise typer.Exit(code=1)
+
+        # Run the benchmark task using the `run` function from adaptation/run.py
+        run(config)
+        typer.echo("Benchmark execution completed successfully.")
+
+    except Exception as e:
+        typer.echo(f"Error during benchmark execution: {e}", err=True)
+        raise typer.Exit(code=1)
 
 
 app.add_typer(dataset_app, name="build-dataset")

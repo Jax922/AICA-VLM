@@ -2,4 +2,4 @@
 
 instruction_type: EU_observer_emotion
 dataset_path: datasets/benchmark/emotion6
-emotion_model: 6
+emotion_model: 6_cls

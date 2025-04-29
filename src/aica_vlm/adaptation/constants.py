@@ -19,4 +19,3 @@ SUPPORTED_TASKS = [
     "emotion-reasoning",
     "emotion-content-generation",
 ]
-SUPPORTED_METRICS = ["accuracy", "f1", "bleu", "mae"]
