@@ -4,7 +4,7 @@ import os
 
 import yaml
 
-from .constants import SUPPORTED_METRICS, SUPPORTED_MODEL_FAMILIES, SUPPORTED_TASKS
+from .constants import SUPPORTED_MODEL_FAMILIES, SUPPORTED_TASKS
 
 
 class ConfigLoader:
@@ -76,13 +76,6 @@ class ConfigLoader:
             raise FileNotFoundError(
                 f"Image folder does not exist or is not a directory: {image_folder}"
             )
-
-        metrics = task.get("metrics", [])
-        if not metrics:
-            raise ValueError("No metrics specified for task.")
-        for metric in metrics:
-            if metric not in SUPPORTED_METRICS:
-                raise ValueError(f"Unsupported metric: {metric}")
 
     def is_supported_model(self, model_name):
         """Check if model_name matches any supported model family."""

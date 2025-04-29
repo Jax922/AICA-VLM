@@ -12,8 +12,6 @@ tasks:
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10
-    additional_kwargs:
-      temperature: 0.2
 
   - task_name: emotion-understanding
     dataset_path: ./datasets/benchmark/artphoto
@@ -22,5 +20,3 @@ tasks:
     metrics: EmotionClassificationMetrics
     generation_method: chat
     maximum_instructions_num: 10
-    additional_kwargs:
-      temperature: 0.1
