@@ -15,7 +15,7 @@
     <img src="images/logo.png" alt="Logo" width="800" height="auto">
   </a>
 
-  <h3 align="center">VLM-EQ</h3>
+  <!-- <h3 align="center">VLM-EQ</h3> -->
 
   <!-- <p align="center">
     An awesome README template to jumpstart your projects!
