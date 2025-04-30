@@ -4,8 +4,8 @@ from typing_extensions import Self
 import torch
 from transformers import AutoModelForCausalLM
 
-from deepseek_vl.models import DeepseekVLV2Processor, DeepseekVLV2ForCausalLM
-from deepseek_vl.utils.io import load_pil_images
+from deepseek_vl2.models import DeepseekVLV2Processor, DeepseekVLV2ForCausalLM
+from deepseek_vl2.utils.io import load_pil_images
 
 from aica_vlm.adaptation.vlm_model_interface import VLMModelFactory, VLMModelInterface
 
@@ -18,7 +18,7 @@ class DeepseekVL(VLMModelInterface):
         self.visual_tokenizer = None
 
     def load_model(self):
-        if self.model_type in ["deepseek-vl2"]:
+        if self.model_type in ["Deepseek-VL2"]:
             self.model = AutoModelForCausalLM.from_pretrained(self.model_path, trust_remote_code=True)
             self.model = self.model.to(torch.bfloat16).cuda().eval()
             self.processor = DeepseekVLV2Processor.from_pretrained(self.model_path)

@@ -31,7 +31,8 @@ dependencies = [
   "qwen-vl-utils[decord]==0.0.8",
   "torchvision",
   "lmdb",
-  "protobuf"
+  "protobuf",
+  "accelerate"
 ]
 
 [project.scripts]

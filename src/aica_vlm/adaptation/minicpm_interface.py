@@ -7,7 +7,7 @@ from transformers import AutoModel, AutoTokenizer
 from aica_vlm.adaptation.vlm_model_interface import VLMModelFactory, VLMModelInterface
 
 
-class MiniCPMV(VLMModelInterface):
+class MiniCPM(VLMModelInterface):
     def __init__(self, model_type: str, model_path: str):
         """
         Initialize MiniCPM-V model.
@@ -25,19 +25,11 @@ class MiniCPMV(VLMModelInterface):
         Dynamically load the model and tokenizer based on the model name.
         """
         if self.model_type in ["MiniCPM-V", "MiniCPM-o"]:
-            self.model = (
-                AutoModel.from_pretrained(
-                    self.model_path,
-                    trust_remote_code=True,
-                    attn_implementation="sdpa",  # Use SDPA attention
-                    torch_dtype=torch.bfloat16,
-                )
-                .eval()
-                .cuda()
-            )
-            self.tokenizer = AutoTokenizer.from_pretrained(
-                self.model_path, trust_remote_code=True
-            )
+            self.model = AutoModel.from_pretrained(self.model_path, 
+                                                   trust_remote_code=True, 
+                                                   attn_implementation='flash_attention_2', 
+                                                   torch_dtype=torch.bfloat16).eval().cuda()
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=True)
         else:
             raise ValueError(f"Unrecognized model name: {self.model_path}")
 
@@ -47,9 +39,14 @@ class MiniCPMV(VLMModelInterface):
 
         # Load and preprocess the image
         image = Image.open(img_path).convert("RGB")
-
+        user_content = user_content.split("<image>", 1)[1].strip()
         # Prepare the message
-        message = [{"role": "user", "content": [image, user_content]}]
+        message = [
+            {
+                "role": "user", 
+                "content": [image, user_content]
+            }
+        ]
 
         return message
 
@@ -67,7 +64,7 @@ class MiniCPMV(VLMModelInterface):
         pass
 
 
-class MiniCPMVFactory(VLMModelFactory):
+class MiniCPMFactory(VLMModelFactory):
     def __init__(self, model_type: str, model_path: str):
         """
         Initialize MiniCPM-V factory.
@@ -82,27 +79,26 @@ class MiniCPMVFactory(VLMModelFactory):
         Returns:
             VLMModelInterface: An instance of the MiniCPM-V model.
         """
-        model = MiniCPMV(self.model_type, self.model_path)
+        model = MiniCPM(self.model_type, self.model_path)
         model.load_model()
         return model
 
 
 if __name__ == "__main__":
+    
     import json
 
-    with open("./datasets/emoset/instruction.json", "r", encoding="utf-8") as f:
+    with open("datasets/benchmark/emoset/instruction.json", "r", encoding="utf-8") as f:
         instructions = json.load(f)
 
     # Specify the model name
-    model_name = ".models/openbmb/MiniCPM-V-2_6"
+    model_type = "MiniCPM-V"
+    model_path = "models/openbmb/MiniCPM-V-2_6"
 
     # Create the model using the factory
-    minicpm_factory = MiniCPMVFactory(model_name)
+    minicpm_factory = MiniCPMFactory(model_type, model_path)
     minicpm_model = minicpm_factory.create_model()
 
     for instruction in instructions:
-        try:
-            result = minicpm_model.inference(instruction)
-        except Exception as e:
-            continue
+        result = minicpm_model.inference(instruction)
         print(result)
