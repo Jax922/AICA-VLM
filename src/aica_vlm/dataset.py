@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Union
 
 import pandas as pd
+from PIL import Image
 
 
 class BaseDataset(ABC):
@@ -94,6 +95,22 @@ class GenericDataset(BaseDataset):
         return df.sample(n=nums, random_state=random_state).reset_index(drop=True)
 
 
+def is_valid_image(path, min_width=32, min_height=32, max_aspect_ratio=10.0):
+    try:
+        if os.path.getsize(path) == 0:
+            return False
+        with Image.open(path) as img:
+            w, h = img.size
+            if w < min_width or h < min_height:
+                return False
+            aspect_ratio = max(w / h, h / w)
+            if aspect_ratio > max_aspect_ratio:
+                return False
+        return True
+    except Exception:
+        return False
+
+
 def build_random_benchmark_dataset(
     dataset_cfgs: list,
     total_num: Union[int, str],
@@ -143,16 +160,22 @@ def build_random_benchmark_dataset(
 
     os.makedirs(os.path.join(output_dir, "images"), exist_ok=True)
 
+    valid_rows = []
     for i, row in sampled_df.iterrows():
         src = row["img_path"]
-        dst = os.path.join(output_dir, "images", f"{i:05d}.jpg")
+        if not is_valid_image(src):
+            print(f"⚠️ Skipping invalid image: {src}")
+            continue
+        dst = os.path.join(output_dir, "images", f"{len(valid_rows):05d}.jpg")
         shutil.copy(src, dst)
-        sampled_df.at[i, "img_name"] = f"{i:05d}.jpg"
+        row["img_name"] = f"{len(valid_rows):05d}.jpg"
+        valid_rows.append(row)
 
-    sampled_df.drop(columns=["img_path"], inplace=True)
-    sampled_df.to_csv(os.path.join(output_dir, "annotations.csv"), index=False)
+    final_df = pd.DataFrame(valid_rows)
+    final_df.drop(columns=["img_path"], inplace=True)
+    final_df.to_csv(os.path.join(output_dir, "annotations.csv"), index=False)
 
-    print(f"✅ Done! {total_num} samples saved to {output_dir}")
+    print(f"Done! {len(final_df)} valid samples saved to {output_dir}")
 
 
 def build_balanced_benchmark_dataset(
@@ -210,16 +233,23 @@ def build_balanced_benchmark_dataset(
     )
 
     os.makedirs(os.path.join(output_dir, "images"), exist_ok=True)
+
+    valid_rows = []
     for i, row in final_df.iterrows():
         src = row["img_path"]
-        dst = os.path.join(output_dir, "images", f"{i:05d}.jpg")
+        if not is_valid_image(src):
+            print(f"⚠️ Skipping invalid image: {src}")
+            continue
+        dst = os.path.join(output_dir, "images", f"{len(valid_rows):05d}.jpg")
         shutil.copy(src, dst)
-        final_df.at[i, "img_name"] = f"{i:05d}.jpg"
+        row["img_name"] = f"{len(valid_rows):05d}.jpg"
+        valid_rows.append(row)
 
-    final_df.drop(columns=["img_path"], inplace=True)
-    final_df.to_csv(os.path.join(output_dir, "annotations.csv"), index=False)
+    filtered_df = pd.DataFrame(valid_rows)
+    filtered_df.drop(columns=["img_path"], inplace=True)
+    filtered_df.to_csv(os.path.join(output_dir, "annotations.csv"), index=False)
 
-    print(f"Balanced benchmark saved: {len(final_df)} images in {output_dir}")
+    print(f"Balanced benchmark saved: {len(filtered_df)} valid images in {output_dir}")
 
 
 if __name__ == "__main__":
