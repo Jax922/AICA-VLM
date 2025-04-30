@@ -90,3 +90,6 @@ aica-vlm build-instruction run benchmark_datasets/example.yaml
 ```bash
 aica-vlm benchmark benchmark_datasets/example.yaml
 ```
+
+
+

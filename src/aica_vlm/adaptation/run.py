@@ -6,7 +6,13 @@ from rich.console import Console
 from rich.table import Table
 
 from aica_vlm.adaptation.instruction_load import InstructionLoader
+
 from aica_vlm.adaptation.qwen_vl_interface import QwenVLFactory
+from aica_vlm.adaptation.ovis_interface import OvisFactory
+from aica_vlm.adaptation.minicpm_v_interface import MiniCPMVFactory
+from aica_vlm.adaptation.llava_interface import LlavaFactory
+from aica_vlm.adaptation.intern_vl_interface import InternVLFactory
+
 from aica_vlm.metrics.eu_cls import EmotionClassificationMetrics
 
 # Initialize a Rich console for pretty printing
@@ -45,7 +51,17 @@ def run(config_path):
 
         # Initialize the model factory and create the model
         console.print("[bold blue]Loading model...[/bold blue]")
-        qwen_factory = QwenVLFactory(model_type, model_path)
+        if "Qwen"  in model_type:
+            qwen_factory = QwenVLFactory(model_type, model_path)
+        elif "LLaVA" in model_type:
+            qwen_factory = LlavaFactory(model_type, model_path)
+        elif "Ovis" in model_type:
+            qwen_factory = OvisFactory(model_type, model_path)
+        elif "MiniCPM" in model_type:
+            qwen_factory = MiniCPMVFactory(model_type, model_path)
+        elif "InternVL" in model_type:
+            qwen_factory = InternVLFactory(model_type, model_path)
+
         qwen_model = qwen_factory.create_model()
         console.print("[bold green]Model loaded successfully![/bold green]")
 

@@ -1,0 +1,22 @@
+model_name: Qwen2-VL-7B-Instruct
+model_type: Qwen2-VL
+model_path: models/Qwen/Qwen2-VL-7B-Instruct
+
+tasks:
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/emoset
+    instruction_file: datasets/benchmark/emoset/instruction.json
+    image_folder: datasets/benchmark/emoset/images/
+    output_result_path: output/Qwen2-VL-7B-Instruct/emoset.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10
+
+  - task_name: emotion-understanding
+    dataset_path: datasets/benchmark/artphoto
+    instruction_file: datasets/benchmark/artphoto/instruction.json
+    image_folder: datasets/benchmark/artphoto/images/
+    metrics: EmotionClassificationMetrics
+    generation_method: chat
+    maximum_instructions_num: 10

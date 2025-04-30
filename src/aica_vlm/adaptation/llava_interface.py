@@ -30,7 +30,7 @@ class Llava(VLMModelInterface):
             ValueError: If the model name is not recognized.
             ImportError: If required dependencies are missing.
         """
-        if self.model_type == "llava-onevision":
+        if self.model_type == "LLaVA-onevision":
             from transformers import (
                 AutoProcessor,
                 LlavaOnevisionForConditionalGeneration,
@@ -38,7 +38,7 @@ class Llava(VLMModelInterface):
 
             self.model_class = LlavaOnevisionForConditionalGeneration
             self.processor_class = AutoProcessor
-        elif self.model_type == "llava-1.6":
+        elif self.model_type == "LLaVA-1.6":
             from transformers import (
                 LlavaNextForConditionalGeneration,
                 LlavaNextProcessor,

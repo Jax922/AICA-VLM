@@ -68,14 +68,12 @@ class MiniCPMV(VLMModelInterface):
 
 
 class MiniCPMVFactory(VLMModelFactory):
-    def __init__(self, model_name: str):
+    def __init__(self, model_type: str, model_path: str):
         """
         Initialize MiniCPM-V factory.
-
-        Args:
-            model_name (str): Model name, e.g., "openbmb/MiniCPM-V-2_6".
         """
-        self.model_name = model_name
+        self.model_type = model_type
+        self.model_path = model_path
 
     def create_model(self) -> VLMModelInterface:
         """
@@ -84,7 +82,7 @@ class MiniCPMVFactory(VLMModelFactory):
         Returns:
             VLMModelInterface: An instance of the MiniCPM-V model.
         """
-        model = MiniCPMV(self.model_name)
+        model = MiniCPMV(self.model_type, self.model_path)
         model.load_model()
         return model
 

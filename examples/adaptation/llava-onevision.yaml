@@ -1,0 +1,15 @@
+model_name: llava-onevision-qwen2-7b-ov-hf
+model_type: LLaVA-onevision
+model_path: models/llava-hf/llava-onevision-qwen2-7b-ov-hf
+
+
+tasks:
+  - task_name: emotion-understanding
+    sub_task_name: Emotion Recognition in Scene Context
+    dataset_path: datasets/benchmark/findingemo
+    instruction_file: datasets/benchmark/findingemo/instruction.json
+    image_folder: datasets/benchmark/findingemo/images/
+    output_result_path: output/LLaVA-onevision/findingemo.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
