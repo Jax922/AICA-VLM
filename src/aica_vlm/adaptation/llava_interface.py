@@ -152,16 +152,23 @@ class LlavaFactory(VLMModelFactory):
 
 
 if __name__ == "__main__":
-    # Example usage
-    with open("datasets/abstract/instruction.json", "r", encoding="utf-8") as f:
-        instructions = json.load(f)
 
-    model_name = "models/llava-hf/llava-onevision-qwen2-7b-ov-hf"
+    model_type = 'LLaVA-1.6'
+    model_path = 'models/llava-hf/llava-v1.6-mistral-7b-hf'
+
+    from aica_vlm.adaptation.instruction_load import InstructionLoader
+    
+    instruction_loader  = InstructionLoader("/public/home/202320163218/yxr_code/LLM_Workspace/AICA-VLM/datasets/benchmark/abstract/instruction.json",
+                                            "/public/home/202320163218/yxr_code/LLM_Workspace/AICA-VLM/datasets/benchmark/abstract/images")
+    
+    instruction_loader.load()
 
     try:
-        factory = LlavaFactory(model_name)
+        factory = LlavaFactory(model_type, model_path)
         model = factory.create_model()
 
+        instructions = instruction_loader.get_instructions()
+        
         for instruction in instructions:
             try:
                 result = model.inference(instruction)
