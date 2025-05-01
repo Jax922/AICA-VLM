@@ -1,3 +1,3 @@
-from .builder import InstructionBuilder
+from .builder import CoTInstructionBuilder, InstructionBuilder
 
-__all__ = ["InstructionBuilder"]
+__all__ = ["InstructionBuilder", "CoTInstructionBuilder"]
