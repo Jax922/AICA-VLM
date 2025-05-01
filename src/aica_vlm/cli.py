@@ -10,7 +10,7 @@ from aica_vlm.dataset import (
     build_balanced_benchmark_dataset,
     build_random_benchmark_dataset,
 )
-from aica_vlm.instructions import InstructionBuilder
+from aica_vlm.instructions import CoTInstructionBuilder, InstructionBuilder
 
 app = typer.Typer(help="AICA-VLM benchmark CLI")
 
@@ -71,6 +71,32 @@ def build_instruction(
     )
     builder.build()
     typer.echo("Instruction generation completed.")
+
+
+# ========== CoT Instruction ==========
+@instruction_app.command("run-cot")
+def build_instruction_cot(
+    config: str = typer.Argument(..., help="YAML config path for CoT instruction task"),
+):
+    """Build CoT-style instructions from a benchmark dataset."""
+    with open(config, "r") as f:
+        cfg = yaml.safe_load(f)
+
+    instruction_type = cfg["instruction_type"]
+    dataset_path = cfg["dataset_path"]
+    emotion_model = cfg["emotion_model"]
+
+    typer.echo(f"Building CoT instructions for: {instruction_type}")
+    typer.echo(f"Dataset path: {dataset_path}")
+    typer.echo(f"Emotion model: {emotion_model}")
+
+    builder = CoTInstructionBuilder(
+        instruction_type=instruction_type,
+        dataset_path=dataset_path,
+        emotion_model=emotion_model,
+    )
+    builder.build()
+    typer.echo("CoT instruction generation completed.")
 
 
 # ========== Benchmark ==========
