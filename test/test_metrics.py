@@ -3,11 +3,10 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src/aica_vlm")))
 
 
-from metrics import (
-    EmotionClassificationMetrics,
-    EmotionRegressionMetrics,
-    EmotionReasoningMetrics
-)
+from metrics.eu_cls import EmotionClassificationMetrics
+from metrics.eu_reg import EmotionRegressionMetrics
+from metrics.er import EmotionReasoningMetrics
+
 
 def test_all_metrics():
     cls = EmotionClassificationMetrics().compute(

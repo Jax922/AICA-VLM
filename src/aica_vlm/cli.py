@@ -11,6 +11,7 @@ from aica_vlm.dataset import (
     build_random_benchmark_dataset,
 )
 from aica_vlm.instructions import CoTInstructionBuilder, InstructionBuilder
+from aica_vlm.metrics.eu_cls import compute_cls_metrics_manually
 
 app = typer.Typer(help="AICA-VLM benchmark CLI")
 
@@ -123,6 +124,29 @@ def benchmark(
 
     except Exception as e:
         typer.echo(f"Error during benchmark execution: {e}", err=True)
+        raise typer.Exit(code=1)
+
+
+# compute_cls_metrics_manually
+@app.command("compute-cls-metrics-manually")
+def compute_metrics(json_file: str):
+    """
+    Compute classification metrics manually using the provided JSON file.
+    """
+    try:
+        typer.echo(f"Loading JSON file from: {json_file}")
+        typer.echo("Computing classification metrics...")
+        compute_cls_metrics_manually(json_file)
+
+        typer.echo("Metrics computation completed successfully.")
+    except FileNotFoundError:
+        typer.echo(f"Error: File not found at {json_file}", err=True)
+        raise typer.Exit(code=1)
+    except json.JSONDecodeError:
+        typer.echo("Error: Invalid JSON file format.", err=True)
+        raise typer.Exit(code=1)
+    except Exception as e:
+        typer.echo(f"Error during metrics computation: {e}", err=True)
         raise typer.Exit(code=1)
 
 
