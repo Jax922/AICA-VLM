@@ -182,6 +182,60 @@ def build_CES_tail(labels):
     return f"Please provide the emotion label for the image. The label should be one of the following: {', '.join(labels)}. Using this format: label"
 
 
+def build_CoT_observer_prompt(emotion_options: list[str]) -> str:
+    prompt = f"""
+    Instructions:
+    You are given an image. Predict the emotion it may evoke in a typical viewer.
+
+    1. Observe: Analyze the image in terms of brightness, colorfulness, scene type, objects, facial expressions, and human actions.
+
+    2. Interpret: Based on these visual features, infer what kind of emotion the image is likely to evoke in an observer.
+
+    3. Select: Choose one emotion from the list that best describes this likely emotional response.
+
+    Emotion Options: {", ".join(emotion_options)}
+
+    Note: Only write the selected emotion on the last line.
+    """
+    return prompt
+
+
+def build_CoT_FER_prompt(emotion_options: list[str]) -> str:
+    prompt = f"""
+    Instructions:
+    You are given an image of a person. Identify the emotion expressed through their facial features.
+
+    1. Observe: Describe the person’s facial expression (e.g., eyes, mouth, brows).
+
+    2. Interpret: Infer what the person might be feeling based on their expression.
+
+    3. Select: Choose one emotion from the list that best matches the facial expression.
+
+    Emotion Options: {", ".join(emotion_options)}
+
+    Note: Only write the selected emotion on the last line.
+    """
+    return prompt
+
+
+def build_CoT_people_in_wild_prompt(emotion_options: list[str]) -> str:
+    prompt = f"""
+    Instructions:
+    You are given an image of a person. Identify the emotion expressed through their facial features.
+
+    1. Observe: Describe the person's body posture, facial expression, and surrounding environment.
+
+    2. Interpret: Based on the visual context, infer how the person might feel.
+
+    3. Select: Choose one emotion from the list that best fits the person's emotional state.
+
+    Emotion Options: {", ".join(emotion_options)}
+
+    Note: Only write the selected emotion on the last line.
+    """
+    return prompt
+
+
 instruction_templates = {
     "EU_FER_instructions": EU_FER_instructions,
     "EU_people_in_wild": EU_people_in_wild,

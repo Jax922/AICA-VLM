@@ -83,13 +83,14 @@ aica-vlm build-dataset run benchmark_datasets/example.yaml --mode random
 
 ### Build Instruction
 ```bash
+# For Base instruction generation
 aica-vlm build-instruction run benchmark_datasets/example.yaml
+
+# For Chain of Thought (CoT) generation
+aica-vlm build-instruction run-cot benchmark_datasets/example_CoT.yaml
 ```
 
 ### Run Evaluation or Benchmark
 ```bash
 aica-vlm benchmark benchmark_datasets/example.yaml
 ```
-
-
-
