@@ -24,11 +24,20 @@ class MiniCPM(VLMModelInterface):
         """
         Dynamically load the model and tokenizer based on the model name.
         """
-        if self.model_type in ["MiniCPM-V", "MiniCPM-o"]:
+        if self.model_type in ["MiniCPM-V"]:
             self.model = AutoModel.from_pretrained(self.model_path, 
                                                    trust_remote_code=True, 
                                                    attn_implementation='flash_attention_2', 
                                                    torch_dtype=torch.bfloat16).eval().cuda()
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=True)
+        elif self.model_type in ["MiniCPM-o"]:
+            self.model = AutoModel.from_pretrained(self.model_path, 
+                                                   trust_remote_code=True,
+                                                   attn_implementation='flash_attention_2',
+                                                   torch_dtype=torch.bfloat16,
+                                                   init_vision=True,
+                                                   init_audio=False,
+                                                   init_tts=False).eval().cuda()
             self.tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=True)
         else:
             raise ValueError(f"Unrecognized model name: {self.model_path}")

@@ -23,13 +23,6 @@ class Llava(VLMModelInterface):
         self.processor = None
 
     def load_model(self) -> None:
-        """
-        Dynamically load model and processor based on model version.
-
-        Raises:
-            ValueError: If the model name is not recognized.
-            ImportError: If required dependencies are missing.
-        """
         if self.model_type == "LLaVA-onevision":
             from transformers import (
                 AutoProcessor,
@@ -56,22 +49,6 @@ class Llava(VLMModelInterface):
         self.processor = self.processor_class.from_pretrained(self.model_path)
 
     def process_instruction(self, instruction: Dict) -> Tuple[str, Image.Image]:
-        """
-        Convert unified instruction format to model-specific inputs.
-
-        Args:
-            instruction: Dictionary containing:
-                - messages: List of message dictionaries
-                - images: List of image paths
-
-        Returns:
-            Tuple containing:
-                - Formatted prompt text
-                - Loaded PIL Image object
-
-        Raises:
-            ValueError: If input format is invalid
-        """
         try:
             user_content = instruction["messages"][0]["content"]
             img_path = instruction["images"][0]
@@ -105,15 +82,7 @@ class Llava(VLMModelInterface):
             raise ValueError(f"Image file not found: {str(e)}")
 
     def inference(self, instruction: Dict) -> str:
-        """
-        Perform single-instruction inference.
-
-        Args:
-            instruction: Input instruction dictionary
-
-        Returns:
-            Generated text output
-        """
+        
         prompt, raw_image = self.process_instruction(instruction)
 
         inputs = self.processor(images=raw_image, text=prompt, return_tensors="pt").to(
@@ -121,9 +90,28 @@ class Llava(VLMModelInterface):
         )
 
         output = self.model.generate(**inputs, max_new_tokens=256, do_sample=False)
+        output_text = self.processor.decode(output[0], skip_special_tokens=True)
 
-        return self.processor.decode(output[0][2:], skip_special_tokens=True)
+        marker = "[/INST]"
+        marker_index = output_text.find(marker)
+        
+        if marker_index != -1:
+            output_text =  output_text[marker_index + len(marker):].strip()
 
+        marker = "assistant\n"
+        marker_index = output_text.find(marker)
+        
+        if marker_index != -1:
+            output_text =  output_text[marker_index + len(marker):].strip()
+
+        marker = "ASSISTANT: "
+        marker_index = output_text.find(marker)
+        
+        if marker_index != -1:
+            output_text =  output_text[marker_index + len(marker):].strip()
+            
+        return output_text
+        
     def batch_inference(self, instructions: List[Dict]) -> List[str]:
         # TODO
         pass

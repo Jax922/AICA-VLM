@@ -5,10 +5,50 @@ model_path: models/OpenGVLab/InternVL3-2B-Instruct
 tasks:
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/abstract
+    instruction_file: datasets/benchmark/abstract/instruction.json
+    image_folder: datasets/benchmark/abstract/images/
+    output_result_path: output/InternVL3-2B-Instruct/abstract.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Emotion Recognition in Scene Context
+    dataset_path: datasets/benchmark/affectnet
+    instruction_file: datasets/benchmark/affectnet/instruction.json
+    image_folder: datasets/benchmark/affectnet/images/
+    output_result_path: output/InternVL3-2B-Instruct/affectnet.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/artphoto
+    instruction_file: datasets/benchmark/artphoto/instruction.json
+    image_folder: datasets/benchmark/artphoto/images/
+    output_result_path: output/InternVL3-2B-Instruct/artphoto.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
     dataset_path: datasets/benchmark/emoset
     instruction_file: datasets/benchmark/emoset/instruction.json
     image_folder: datasets/benchmark/emoset/images/
     output_result_path: output/InternVL3-2B-Instruct/emoset.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Emotion Recognition in Scene Context
+    dataset_path: datasets/benchmark/emotic
+    instruction_file: datasets/benchmark/emotic/instruction.json
+    image_folder: datasets/benchmark/emotic/images/
+    output_result_path: output/InternVL3-2B-Instruct/emotic.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -34,21 +74,11 @@ tasks:
     maximum_instructions_num: 10000
 
   - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/abstract
-    instruction_file: datasets/benchmark/abstract/instruction.json
-    image_folder: datasets/benchmark/abstract/images/
-    output_result_path: output/InternVL3-2B-Instruct/abstract.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/artphoto
-    instruction_file: datasets/benchmark/artphoto/instruction.json
-    image_folder: datasets/benchmark/artphoto/images/
-    output_result_path: output/InternVL3-2B-Instruct/artphoto.json
+    sub_task_name: Emotion Recognition in Scene Context
+    dataset_path: datasets/benchmark/findingemo
+    instruction_file: datasets/benchmark/findingemo/instruction.json
+    image_folder: datasets/benchmark/findingemo/images/
+    output_result_path: output/InternVL3-2B-Instruct/findingemo.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
