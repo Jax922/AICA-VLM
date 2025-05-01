@@ -1,0 +1,104 @@
+model_name: Qwen2-VL-7B-Instruct
+model_type: Qwen2-VL
+model_path: models/Qwen/Qwen2-VL-7B-Instruct
+
+tasks:
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/emotion6
+    instruction_file: datasets/benchmark/emotion6/instruction_cot.json
+    image_folder: datasets/benchmark/emotion6/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/emotion6.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/fi
+    instruction_file: datasets/benchmark/fi/instruction_cot.json
+    image_folder: datasets/benchmark/fi/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/fi.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Emotion Recognition in Scene Context
+    dataset_path: datasets/benchmark/findingemo
+    instruction_file: datasets/benchmark/findingemo/instruction_cot.json
+    image_folder: datasets/benchmark/findingemo/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/findingemo.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/flickrldl
+    instruction_file: datasets/benchmark/flickrldl/instruction_cot.json
+    image_folder: datasets/benchmark/flickrldl/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/flickrldl.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/twitterldl
+    instruction_file: datasets/benchmark/twitterldl/instruction_cot.json
+    image_folder: datasets/benchmark/twitterldl/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/twitterldl.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/emoset
+    instruction_file: datasets/benchmark/emoset/instruction_cot.json
+    image_folder: datasets/benchmark/emoset/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/emoset.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/abstract
+    instruction_file: datasets/benchmark/abstract/instruction_cot.json
+    image_folder: datasets/benchmark/abstract/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/abstract.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Emotion Recognition in Scene Context
+    dataset_path: datasets/benchmark/affectnet
+    instruction_file: datasets/benchmark/affectnet/instruction_cot.json
+    image_folder: datasets/benchmark/affectnet/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/affectnet.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+
+  - task_name: emotion-understanding
+    sub_task_name: Emotion Recognition in Scene Context
+    dataset_path: datasets/benchmark/emotic
+    instruction_file: datasets/benchmark/emotic/instruction_cot.json
+    image_folder: datasets/benchmark/emotic/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/emotic.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
+    
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/artphoto
+    instruction_file: datasets/benchmark/artphoto/instruction_cot.json
+    image_folder: datasets/benchmark/artphoto/images/
+    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/artphoto.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000

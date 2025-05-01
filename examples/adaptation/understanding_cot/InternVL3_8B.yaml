@@ -1,14 +1,14 @@
-model_name: MiniCPM-V-2_6
-model_type: MiniCPM-V
-model_path: models/openbmb/MiniCPM-V-2_6
+model_name: InternVL3-8B-Instruct
+model_type: InternVL3
+model_path: models/OpenGVLab/InternVL3-8B-Instruct
 
 tasks:
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
     dataset_path: datasets/benchmark/abstract
-    instruction_file: datasets/benchmark/abstract/instruction.json
+    instruction_file: datasets/benchmark/abstract/instruction_cot.json
     image_folder: datasets/benchmark/abstract/images/
-    output_result_path: output/MiniCPM-o-2_6/abstract.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/abstract.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -16,9 +16,9 @@ tasks:
   - task_name: emotion-understanding
     sub_task_name: Emotion Recognition in Scene Context
     dataset_path: datasets/benchmark/affectnet
-    instruction_file: datasets/benchmark/affectnet/instruction.json
+    instruction_file: datasets/benchmark/affectnet/instruction_cot.json
     image_folder: datasets/benchmark/affectnet/images/
-    output_result_path: output/MiniCPM-o-2_6/affectnet.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/affectnet.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -26,9 +26,9 @@ tasks:
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
     dataset_path: datasets/benchmark/artphoto
-    instruction_file: datasets/benchmark/artphoto/instruction.json
+    instruction_file: datasets/benchmark/artphoto/instruction_cot.json
     image_folder: datasets/benchmark/artphoto/images/
-    output_result_path: output/MiniCPM-o-2_6/artphoto.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/artphoto.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -36,9 +36,9 @@ tasks:
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
     dataset_path: datasets/benchmark/emoset
-    instruction_file: datasets/benchmark/emoset/instruction.json
+    instruction_file: datasets/benchmark/emoset/instruction_cot.json
     image_folder: datasets/benchmark/emoset/images/
-    output_result_path: output/MiniCPM-o-2_6/emoset.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/emoset.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -46,9 +46,9 @@ tasks:
   - task_name: emotion-understanding
     sub_task_name: Emotion Recognition in Scene Context
     dataset_path: datasets/benchmark/emotic
-    instruction_file: datasets/benchmark/emotic/instruction.json
+    instruction_file: datasets/benchmark/emotic/instruction_cot.json
     image_folder: datasets/benchmark/emotic/images/
-    output_result_path: output/MiniCPM-o-2_6/emotic.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/emotic.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -56,9 +56,9 @@ tasks:
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
     dataset_path: datasets/benchmark/emotion6
-    instruction_file: datasets/benchmark/emotion6/instruction.json
+    instruction_file: datasets/benchmark/emotion6/instruction_cot.json
     image_folder: datasets/benchmark/emotion6/images/
-    output_result_path: output/MiniCPM-o-2_6/emotion6.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/emotion6.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -66,9 +66,9 @@ tasks:
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
     dataset_path: datasets/benchmark/fi
-    instruction_file: datasets/benchmark/fi/instruction.json
+    instruction_file: datasets/benchmark/fi/instruction_cot.json
     image_folder: datasets/benchmark/fi/images/
-    output_result_path: output/MiniCPM-o-2_6/fi.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/fi.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -76,9 +76,9 @@ tasks:
   - task_name: emotion-understanding
     sub_task_name: Emotion Recognition in Scene Context
     dataset_path: datasets/benchmark/findingemo
-    instruction_file: datasets/benchmark/findingemo/instruction.json
+    instruction_file: datasets/benchmark/findingemo/instruction_cot.json
     image_folder: datasets/benchmark/findingemo/images/
-    output_result_path: output/MiniCPM-o-2_6/findingemo.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/findingemo.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -86,9 +86,9 @@ tasks:
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
     dataset_path: datasets/benchmark/flickrldl
-    instruction_file: datasets/benchmark/flickrldl/instruction.json
+    instruction_file: datasets/benchmark/flickrldl/instruction_cot.json
     image_folder: datasets/benchmark/flickrldl/images/
-    output_result_path: output/MiniCPM-o-2_6/flickrldl.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/flickrldl.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
@@ -96,9 +96,9 @@ tasks:
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
     dataset_path: datasets/benchmark/twitterldl
-    instruction_file: datasets/benchmark/twitterldl/instruction.json
+    instruction_file: datasets/benchmark/twitterldl/instruction_cot.json
     image_folder: datasets/benchmark/twitterldl/images/
-    output_result_path: output/MiniCPM-o-2_6/twitterldl.json
+    output_result_path: output/understanding_cot/InternVL3-8B-Instruct/twitterldl.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
