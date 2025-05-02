@@ -89,7 +89,7 @@ class Llava(VLMModelInterface):
             0, torch.float16
         )
 
-        output = self.model.generate(**inputs, max_new_tokens=256, do_sample=False)
+        output = self.model.generate(**inputs, max_new_tokens=512, do_sample=False)
         output_text = self.processor.decode(output[0], skip_special_tokens=True)
 
         marker = "[/INST]"

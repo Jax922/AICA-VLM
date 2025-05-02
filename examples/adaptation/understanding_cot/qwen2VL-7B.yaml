@@ -64,16 +64,6 @@ tasks:
     maximum_instructions_num: 10000
 
   - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/abstract
-    instruction_file: datasets/benchmark/abstract/instruction_cot.json
-    image_folder: datasets/benchmark/abstract/images/
-    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/abstract.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
     sub_task_name: Emotion Recognition in Scene Context
     dataset_path: datasets/benchmark/affectnet
     instruction_file: datasets/benchmark/affectnet/instruction_cot.json
@@ -93,12 +83,3 @@ tasks:
     generation_method: generate
     maximum_instructions_num: 10000
     
-  - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/artphoto
-    instruction_file: datasets/benchmark/artphoto/instruction_cot.json
-    image_folder: datasets/benchmark/artphoto/images/
-    output_result_path: output/understanding_cot/Qwen2-VL-7B-Instruct/artphoto.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000

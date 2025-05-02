@@ -121,7 +121,7 @@ class Ovis(VLMModelInterface):
         # generate outputs
         with torch.inference_mode():
             gen_kwargs = dict(
-                max_new_tokens=1024,
+                max_new_tokens=512,
                 do_sample=False,
                 top_p=None,
                 top_k=None,

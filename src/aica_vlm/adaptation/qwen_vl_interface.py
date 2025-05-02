@@ -1,10 +1,33 @@
-import json
 import sys
+import json
 from typing import Dict, List, Optional
 
+from PIL import Image
 from qwen_vl_utils import process_vision_info
-
 from aica_vlm.adaptation.vlm_model_interface import VLMModelFactory, VLMModelInterface
+
+def resize_image(image_path: str, max_width: int, max_height: int) -> Image.Image:
+    """
+    Resize an image if its width or height exceeds specified maximum dimensions.
+
+    Args:
+        image_path: Path to the image file.
+        max_width: Maximum allowable width.
+        max_height: Maximum allowable height.
+
+    Returns:
+        Resized PIL Image object.
+    """
+    image = Image.open(image_path)
+    original_width, original_height = image.size
+
+    if original_width > max_width or original_height > max_height:
+        scale_factor = min(max_width / original_width, max_height / original_height)
+        new_width = int(original_width * scale_factor)
+        new_height = int(original_height * scale_factor)
+        image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+    return image
 
 
 class QwenVL(VLMModelInterface):
@@ -20,6 +43,8 @@ class QwenVL(VLMModelInterface):
         self.processor_class = None
         self.model = None
         self.processor = None
+        self.max_width = 1024  # Define maximum width threshold
+        self.max_height = 1024  # Define maximum height threshold
 
     def load_model(self) -> None:
         """
@@ -46,7 +71,7 @@ class QwenVL(VLMModelInterface):
         self.model = self.model_class.from_pretrained(
             self.model_path, torch_dtype="auto", device_map="auto"
         )
-        self.processor = self.processor_class.from_pretrained(self.model_path)
+        self.processor = self.processor_class.from_pretrained(self.model_path, max_pixels=1024*28*28)
 
     def process_instruction(self, instruction: dict) -> list:
         user_content = instruction["messages"][0]["content"]
@@ -58,13 +83,16 @@ class QwenVL(VLMModelInterface):
                 "Invalid prompt format: 'messages' or 'images' is not a string."
             )
 
+        # Resize image if needed
+        image = resize_image(img_path, self.max_width, self.max_height)
+        
         # Extract the prompt text
         full_prompt = user_content.split("<image>", 1)[1].strip()
         message = [
             {
                 "role": "user",
                 "content": [
-                    {"type": "image", "image": img_path},
+                    {"type": "image", "image": image},
                     {"type": "text", "text": full_prompt},
                 ],
             }
@@ -90,9 +118,9 @@ class QwenVL(VLMModelInterface):
         ).to("cuda")
 
         # Generate output
-        generated_ids = self.model.generate(**inputs, max_new_tokens=128)
+        generated_ids = self.model.generate(**inputs, max_new_tokens=512)
         generated_ids_trimmed = [
-            out_ids[len(in_ids) :]
+            out_ids[len(in_ids):]
             for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
         ]
         output_text = self.processor.batch_decode(
@@ -100,7 +128,7 @@ class QwenVL(VLMModelInterface):
             skip_special_tokens=True,
             clean_up_tokenization_spaces=False,
         )
-
+        print(output_text)
         return output_text
 
     def batch_inference(self, instructions: List[Dict]) -> List[str]:
@@ -134,7 +162,7 @@ class QwenVL(VLMModelInterface):
         ).to("cuda")
 
         # Generate outputs
-        generated_ids = self.model.generate(**inputs, max_new_tokens=256)
+        generated_ids = self.model.generate(**inputs, max_new_tokens=512)
         generated_ids = [
             out[len(inp) :] for inp, out in zip(inputs.input_ids, generated_ids)
         ]

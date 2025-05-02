@@ -3,55 +3,6 @@ model_type: Ovis2
 model_path: models/AIDC-AI/Ovis2-8B
 
 tasks:
-  - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/abstract
-    instruction_file: datasets/benchmark/abstract/instruction_cot.json
-    image_folder: datasets/benchmark/abstract/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/abstract.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
-    sub_task_name: Emotion Recognition in Scene Context
-    dataset_path: datasets/benchmark/affectnet
-    instruction_file: datasets/benchmark/affectnet/instruction_cot.json
-    image_folder: datasets/benchmark/affectnet/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/affectnet.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/artphoto
-    instruction_file: datasets/benchmark/artphoto/instruction_cot.json
-    image_folder: datasets/benchmark/artphoto/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/artphoto.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/emoset
-    instruction_file: datasets/benchmark/emoset/instruction_cot.json
-    image_folder: datasets/benchmark/emoset/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/emoset.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
-    sub_task_name: Emotion Recognition in Scene Context
-    dataset_path: datasets/benchmark/emotic
-    instruction_file: datasets/benchmark/emotic/instruction_cot.json
-    image_folder: datasets/benchmark/emotic/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/emotic.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
 
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis

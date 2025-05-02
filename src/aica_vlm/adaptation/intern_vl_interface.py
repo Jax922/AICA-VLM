@@ -132,7 +132,7 @@ class InternVL(VLMModelInterface):
 
     def inference(self, instruction: Dict) -> str:
         question, pixel_values = self.process_instruction(instruction)
-        generation_config = {"max_new_tokens": 256, "do_sample": True}
+        generation_config = {"max_new_tokens": 512, "do_sample": True}
         return self.model.chat(
             self.tokenizer, pixel_values, question, generation_config
         )
@@ -148,7 +148,7 @@ class InternVL(VLMModelInterface):
 
         concatenated_pixels = torch.cat(pixel_values_list, dim=0)
 
-        generation_config = {"max_new_tokens": 256, "do_sample": True}
+        generation_config = {"max_new_tokens": 512, "do_sample": True}
 
         return self.model.batch_chat(
             self.tokenizer,

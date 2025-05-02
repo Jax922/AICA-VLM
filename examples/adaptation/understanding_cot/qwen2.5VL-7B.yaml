@@ -82,13 +82,3 @@ tasks:
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/artphoto
-    instruction_file: datasets/benchmark/artphoto/instruction_cot.json
-    image_folder: datasets/benchmark/artphoto/images/
-    output_result_path: output/understanding_cot/Qwen2.5-VL-7B-Instruct/artphoto.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
