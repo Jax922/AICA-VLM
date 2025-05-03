@@ -22,8 +22,17 @@ class ClosedSourceAPIModel:
         )
 
     def encode_image_to_base64(self, image_path):
-        """base64 string"""
+        """Convert an image to a base64 string after resizing the longest side to 512 pixels."""
         with Image.open(image_path) as img:
+            original_width, original_height = img.size
+
+            max_side = max(original_width, original_height)
+            if max_side > 512:
+                scale_ratio = 512 / max_side
+                new_width = int(original_width * scale_ratio)
+                new_height = int(original_height * scale_ratio)
+                img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
             buffered = BytesIO()
             img.convert("RGB").save(buffered, format="JPEG")
             img_bytes = buffered.getvalue()
