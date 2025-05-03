@@ -1,0 +1,16 @@
+model_name: gpt-4o-mini
+api_key: sk-aTZqAq7clFWmFDuq5mphGytK40C92zjikfEN0Cs47qbnSJQs
+base_url: https://api.chatanywhere.tech/v1
+
+
+tasks:
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/abstract
+    instruction_file: datasets/benchmark/abstract/instruction.json
+    image_folder: datasets/benchmark/abstract/images/
+    output_result_path: output/gpt4o-mini/abstract.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 2
+    
