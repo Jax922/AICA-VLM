@@ -192,3 +192,5 @@ output/
 
 .env
 handle.py
+
+closesource_models/
