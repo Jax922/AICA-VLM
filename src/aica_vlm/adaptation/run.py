@@ -12,13 +12,11 @@ from aica_vlm.adaptation.ovis_interface import OvisFactory
 from aica_vlm.adaptation.minicpm_interface import MiniCPMFactory
 from aica_vlm.adaptation.llava_interface import LlavaFactory
 from aica_vlm.adaptation.intern_vl_interface import InternVLFactory
-# from aica_vlm.adaptation.deepseek_interface import DeepseekVLFactory
 
 from aica_vlm.metrics.eu_cls import EmotionClassificationMetrics
 
 # Initialize a Rich console for pretty printing
 console = Console()
-
 
 def run(config_path):
     """
@@ -52,20 +50,19 @@ def run(config_path):
 
         # Initialize the model factory and create the model
         console.print("[bold blue]Loading model...[/bold blue]")
-        if "Qwen"  in model_type:
-            qwen_factory = QwenVLFactory(model_type, model_path)
+        
+        if "Qwen" in model_type:
+            model_factory = QwenVLFactory(model_type, model_path)
         elif "LLaVA" in model_type:
-            qwen_factory = LlavaFactory(model_type, model_path)
+            model_factory = LlavaFactory(model_type, model_path)
         elif "Ovis" in model_type:
-            qwen_factory = OvisFactory(model_type, model_path)
+            model_factory = OvisFactory(model_type, model_path)
         elif "MiniCPM" in model_type:
-            qwen_factory = MiniCPMFactory(model_type, model_path)
+            model_factory = MiniCPMFactory(model_type, model_path)
         elif "InternVL" in model_type:
-            qwen_factory = InternVLFactory(model_type, model_path)
-        # elif "Deepseek-VL" in model_type:
-        #     qwen_factory = DeepseekVLFactory(model_type, model_path)
+            model_factory = InternVLFactory(model_type, model_path)
             
-        qwen_model = qwen_factory.create_model()
+        vlm_model = model_factory.create_model()
         console.print("[bold green]Model loaded successfully![/bold green]")
 
         # Process tasks
@@ -120,7 +117,7 @@ def run(config_path):
                 console.print(
                     f"[bold cyan]Running inference for instruction {idx + 1}/{len(instructions)}...[/bold cyan]"
                 )
-                result = qwen_model.inference(instruction)
+                result = vlm_model.inference(instruction)
                 temp_item_res = {
                     "image_path": instruction["images"][0],
                     "prompt_text": instruction["messages"][0]["content"],

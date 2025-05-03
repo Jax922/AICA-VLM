@@ -1,11 +1,33 @@
-import sys
-
 import torch
 from PIL import Image
 from transformers import AutoModel, AutoTokenizer
 
 from aica_vlm.adaptation.vlm_model_interface import VLMModelFactory, VLMModelInterface
 
+def resize_image(image_path: str, max_width: int, max_height: int) -> Image.Image:
+    """
+    Resize an image if its width or height exceeds specified maximum dimensions.
+
+    Args:
+        image_path: Path to the image file.
+        max_width: Maximum allowable width.
+        max_height: Maximum allowable height.
+
+    Returns:
+        Resized PIL Image object.
+    """
+    image = Image.open(image_path)
+    original_width, original_height = image.size
+
+    if original_width > max_width or original_height > max_height:
+        scale_factor = min(max_width / original_width, max_height / original_height)
+        new_width = int(original_width * scale_factor)
+        new_height = int(original_height * scale_factor)
+        image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+    image = image.convert("RGB")
+    
+    return image
 
 class MiniCPM(VLMModelInterface):
     def __init__(self, model_type: str, model_path: str):
@@ -19,7 +41,9 @@ class MiniCPM(VLMModelInterface):
         self.model_path = model_path
         self.model = None
         self.tokenizer = None
-
+        self.max_width = 1024  # Define maximum width threshold
+        self.max_height = 1024  # Define maximum height threshold
+        
     def load_model(self):
         """
         Dynamically load the model and tokenizer based on the model name.
@@ -46,8 +70,9 @@ class MiniCPM(VLMModelInterface):
         user_content = instruction["messages"][0]["content"]
         img_path = instruction["images"][0]
 
-        # Load and preprocess the image
-        image = Image.open(img_path).convert("RGB")
+        # Resize image if needed
+        image = resize_image(img_path, self.max_width, self.max_height)
+
         user_content = user_content.split("<image>", 1)[1].strip()
         # Prepare the message
         message = [

@@ -7,6 +7,28 @@ from PIL import Image
 
 from aica_vlm.adaptation.vlm_model_interface import VLMModelFactory, VLMModelInterface
 
+def resize_image(image_path: str, max_width: int, max_height: int) -> Image.Image:
+    """
+    Resize an image if its width or height exceeds specified maximum dimensions.
+
+    Args:
+        image_path: Path to the image file.
+        max_width: Maximum allowable width.
+        max_height: Maximum allowable height.
+
+    Returns:
+        Resized PIL Image object.
+    """
+    image = Image.open(image_path)
+    original_width, original_height = image.size
+
+    if original_width > max_width or original_height > max_height:
+        scale_factor = min(max_width / original_width, max_height / original_height)
+        new_width = int(original_width * scale_factor)
+        new_height = int(original_height * scale_factor)
+        image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+    return image
 
 class Llava(VLMModelInterface):
     """Implementation of VLMModelInterface for LLaVA vision-language models."""
@@ -21,7 +43,9 @@ class Llava(VLMModelInterface):
         self.processor_class: Optional[type] = None
         self.model = None
         self.processor = None
-
+        self.max_width = 1024  # Define maximum width threshold
+        self.max_height = 1024  # Define maximum height threshold
+        
     def load_model(self) -> None:
         if self.model_type == "LLaVA-onevision":
             from transformers import (
@@ -74,7 +98,9 @@ class Llava(VLMModelInterface):
                 conversation, add_generation_prompt=True
             )
 
-            return prompt, Image.open(img_path)
+            image = resize_image(img_path, self.max_width, self.max_height)
+            
+            return prompt, image
 
         except (KeyError, IndexError) as e:
             raise ValueError(f"Malformed instruction format: {str(e)}")
@@ -83,9 +109,9 @@ class Llava(VLMModelInterface):
 
     def inference(self, instruction: Dict) -> str:
         
-        prompt, raw_image = self.process_instruction(instruction)
+        prompt, image = self.process_instruction(instruction)
 
-        inputs = self.processor(images=raw_image, text=prompt, return_tensors="pt").to(
+        inputs = self.processor(images=image, text=prompt, return_tensors="pt").to(
             0, torch.float16
         )
 
@@ -111,12 +137,11 @@ class Llava(VLMModelInterface):
             output_text =  output_text[marker_index + len(marker):].strip()
             
         return output_text
-        
-    def batch_inference(self, instructions: List[Dict]) -> List[str]:
+
+    def batch_inference(self, instructions: list[dict]):
         # TODO
         pass
-
-
+    
 class LlavaFactory(VLMModelFactory):
     """Factory class for creating LLaVA model instances."""
 
@@ -137,34 +162,3 @@ class LlavaFactory(VLMModelFactory):
         model = Llava(self.model_type, self.model_path)
         model.load_model()
         return model
-
-
-if __name__ == "__main__":
-
-    model_type = 'LLaVA-1.6'
-    model_path = 'models/llava-hf/llava-v1.6-mistral-7b-hf'
-
-    from aica_vlm.adaptation.instruction_load import InstructionLoader
-    
-    instruction_loader  = InstructionLoader("/public/home/202320163218/yxr_code/LLM_Workspace/AICA-VLM/datasets/benchmark/abstract/instruction.json",
-                                            "/public/home/202320163218/yxr_code/LLM_Workspace/AICA-VLM/datasets/benchmark/abstract/images")
-    
-    instruction_loader.load()
-
-    try:
-        factory = LlavaFactory(model_type, model_path)
-        model = factory.create_model()
-
-        instructions = instruction_loader.get_instructions()
-        
-        for instruction in instructions:
-            try:
-                result = model.inference(instruction)
-                print(result)
-            except Exception as e:
-                print(f"Error processing instruction: {str(e)}")
-                continue
-
-    except Exception as e:
-        print(f"Failed to initialize model: {str(e)}")
-        sys.exit(1)

@@ -179,27 +179,3 @@ class InternVLFactory(VLMModelFactory):
         model = InternVL(self.model_type, self.model_path)
         model.load_model()
         return model
-
-
-if __name__ == "__main__":
-    # Example usage with error handling
-    try:
-        with open("datasets/abstract/instruction.json", "r", encoding="utf-8") as f:
-            instructions = json.load(f)
-
-        model_name = "models/OpenGVLab/InternVL3-8B-Instruct"
-
-        factory = InternVLFactory(model_name)
-        model = factory.create_model()
-
-        for instruction in instructions:
-            try:
-                result = model.inference(instruction)
-                print(result)
-            except Exception as e:
-                print(f"Error processing instruction: {str(e)}")
-                continue
-
-    except Exception as e:
-        print(f"Fatal error: {str(e)}")
-        sys.exit(1)

@@ -1,6 +1,6 @@
-model_name: Qwen2.5VL-3B
-model_type: Qwen2.5-VL
-model_path: models/Qwen/Qwen2.5-VL-3B-Instruct
+model_name: Ovis2-8B
+model_type: Ovis2
+model_path: models/AIDC-AI/Ovis2-8B
 
 tasks:
   - task_name: emotion-reasoning
@@ -8,8 +8,7 @@ tasks:
     dataset_path: datasets/benchmark/emoset
     instruction_file: datasets/benchmark/emoset/reasoning.json
     image_folder: datasets/benchmark/emoset/images/
-    output_result_path: output/reasoning/Qwen2.5-VL-3B-Instruct/emoset-reasoning.json
+    output_result_path: output/reasoning/Ovis2-8B/emoset-reasoning.json
     metrics: EmotionReasoningMetrics
     generation_method: generate
     maximum_instructions_num: 10000
-    

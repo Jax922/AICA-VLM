@@ -3,53 +3,22 @@ model_type: Ovis2
 model_path: models/AIDC-AI/Ovis2-8B
 
 tasks:
-
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/emotion6
-    instruction_file: datasets/benchmark/emotion6/instruction_cot.json
-    image_folder: datasets/benchmark/emotion6/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/emotion6.json
+    dataset_path: datasets/benchmark/abstract
+    instruction_file: datasets/benchmark/abstract/instruction.json
+    image_folder: datasets/benchmark/abstract/images/
+    output_result_path: output/understanding_cot/Ovis2-8B/abstract.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
 
   - task_name: emotion-understanding
     sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/fi
-    instruction_file: datasets/benchmark/fi/instruction_cot.json
-    image_folder: datasets/benchmark/fi/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/fi.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
-    sub_task_name: Emotion Recognition in Scene Context
-    dataset_path: datasets/benchmark/findingemo
-    instruction_file: datasets/benchmark/findingemo/instruction_cot.json
-    image_folder: datasets/benchmark/findingemo/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/findingemo.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/flickrldl
-    instruction_file: datasets/benchmark/flickrldl/instruction_cot.json
-    image_folder: datasets/benchmark/flickrldl/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/flickrldl.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
-
-  - task_name: emotion-understanding
-    sub_task_name: Image Sentiment Analysis
-    dataset_path: datasets/benchmark/twitterldl
-    instruction_file: datasets/benchmark/twitterldl/instruction_cot.json
-    image_folder: datasets/benchmark/twitterldl/images/
-    output_result_path: output/understanding_cot/Ovis2-8B/twitterldl.json
+    dataset_path: datasets/benchmark/artphoto
+    instruction_file: datasets/benchmark/artphoto/instruction.json
+    image_folder: datasets/benchmark/artphoto/images/
+    output_result_path: output/understanding_cot/Ovis2-8B/artphoto.json
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000

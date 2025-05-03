@@ -99,18 +99,4 @@ class InstructionLoader:
                     f"[bold red]Error: Image file is empty (0KB): {img_path}[/bold red]"
                 )
                 raise ValueError(f"Image file is empty (0KB): {img_path}")
-
-
-if __name__ == "__main__":
-    instruction_file = (
-        "/home/pci/yxr/AICA-VLM/datasets/benchmark/abstract/instruction.json"
-    )
-    image_folder = "/home/pci/yxr/AICA-VLM/datasets/benchmark/abstract/images"
-    try:
-        loader = InstructionLoader(instruction_file, image_folder)
-        loader.load()
-        instructions = loader.get_instructions()
-        for instruction in instructions:
-            print("Loaded instructions:", instruction)
-    except Exception as e:
-        Console().print(f"[bold red]Error:[/bold red] {e}")
+            

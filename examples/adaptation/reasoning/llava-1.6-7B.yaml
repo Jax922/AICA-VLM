@@ -1,6 +1,6 @@
-model_name: Qwen2.5VL-3B
-model_type: Qwen2.5-VL
-model_path: models/Qwen/Qwen2.5-VL-3B-Instruct
+model_name: llava-v1.6-mistral-7b-hf
+model_type: LLaVA-1.6
+model_path: models/llava-hf/llava-v1.6-mistral-7b-hf
 
 tasks:
   - task_name: emotion-reasoning
@@ -8,8 +8,7 @@ tasks:
     dataset_path: datasets/benchmark/emoset
     instruction_file: datasets/benchmark/emoset/reasoning.json
     image_folder: datasets/benchmark/emoset/images/
-    output_result_path: output/reasoning/Qwen2.5-VL-3B-Instruct/emoset-reasoning.json
+    output_result_path: output/reasoning/llava-v1.6-mistral-7b-hf/emoset-reasoning.json
     metrics: EmotionReasoningMetrics
     generation_method: generate
     maximum_instructions_num: 10000
-    

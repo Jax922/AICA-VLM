@@ -146,7 +146,6 @@ class Ovis(VLMModelInterface):
 
         return output_text
 
-
 class OvisFactory(VLMModelFactory):
     def __init__(self, model_type: str, model_path: str):
         self.model_type = model_type
@@ -156,18 +155,3 @@ class OvisFactory(VLMModelFactory):
         model = Ovis(self.model_type, self.model_path)
         model.load_model()
         return model
-
-
-if __name__ == "__main__":
-    import json
-
-    with open("./datasets/abstract/instruction.json", "r", encoding="utf-8") as f:
-        instructions = json.load(f)
-
-    model_name = "./models/Qwen/Qwen2.5-VL-3B-Instruct"
-    qwen_factory = OvisFactory(model_name)
-    qwen_model = qwen_factory.create_model()
-
-    for instruction in instructions:
-        result = qwen_model.inference(instruction)
-        print(result)

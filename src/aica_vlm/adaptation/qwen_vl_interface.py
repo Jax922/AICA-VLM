@@ -128,8 +128,7 @@ class QwenVL(VLMModelInterface):
             skip_special_tokens=True,
             clean_up_tokenization_spaces=False,
         )
-        print(output_text)
-        return output_text
+        return output_text[0]
 
     def batch_inference(self, instructions: List[Dict]) -> List[str]:
         """
@@ -192,21 +191,3 @@ class QwenVLFactory(VLMModelFactory):
         model = QwenVL(self.model_type, self.model_path)
         model.load_model()
         return model
-
-
-if __name__ == "__main__":
-    # Example usage
-    with open("datasets/abstract/instruction.json", "r", encoding="utf-8") as f:
-        instructions = json.load(f)
-
-    model_name = "Qwen/Qwen2.5-VL-3B-Instruct"
-    factory = QwenVLFactory(model_name)
-    model = factory.create_model()
-
-    for instruction in instructions:
-        try:
-            result = model.inference(instruction)
-            print(result)
-        except Exception as e:
-            print(f"Error processing instruction: {str(e)}")
-            continue
