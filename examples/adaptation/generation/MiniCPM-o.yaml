@@ -1,0 +1,14 @@
+model_name: MiniCPM-o-2_6
+model_type: MiniCPM-o
+model_path: models/openbmb/MiniCPM-o-2_6
+
+tasks:
+  - task_name: Emotion Content Generation
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/emoset
+    instruction_file: datasets/benchmark/emoset/generation.json
+    image_folder: datasets/benchmark/emoset/images/
+    output_result_path: output/generation/MiniCPM-o-2_6/emoset-generation.json
+    metrics: EmotionReasoningMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000

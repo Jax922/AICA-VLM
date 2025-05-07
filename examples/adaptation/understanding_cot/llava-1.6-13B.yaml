@@ -1,6 +1,6 @@
-model_name: llava-v1.6-mistral-7b-hf
+model_name: llava-v1.6-vicuna-13b-hf
 model_type: LLaVA-1.6
-model_path: models/llava-hf/llava-v1.6-mistral-7b-hf
+model_path: models/llava-hf/llava-v1.6-vicuna-13b-hf
 
 tasks:
   # - task_name: emotion-understanding
@@ -8,7 +8,7 @@ tasks:
   #   dataset_path: datasets/benchmark/abstract
   #   instruction_file: datasets/benchmark/abstract/instruction_cot.json
   #   image_folder: datasets/benchmark/abstract/images/
-  #   output_result_path: output/understanding_cot/LLaVA-1.6-7B/abstract.json
+  #   output_result_path: output/understanding_cot/LLaVA-1.6-13B/abstract.json
   #   metrics: EmotionClassificationMetrics
   #   generation_method: generate
   #   maximum_instructions_num: 10000
@@ -18,7 +18,7 @@ tasks:
   #   dataset_path: datasets/benchmark/affectnet
   #   instruction_file: datasets/benchmark/affectnet/instruction_cot.json
   #   image_folder: datasets/benchmark/affectnet/images/
-  #   output_result_path: output/understanding_cot/LLaVA-1.6-7B/affectnet.json
+  #   output_result_path: output/understanding_cot/LLaVA-1.6-13B/affectnet.json
   #   metrics: EmotionClassificationMetrics
   #   generation_method: generate
   #   maximum_instructions_num: 10000
@@ -28,27 +28,27 @@ tasks:
   #   dataset_path: datasets/benchmark/artphoto
   #   instruction_file: datasets/benchmark/artphoto/instruction_cot.json
   #   image_folder: datasets/benchmark/artphoto/images/
-  #   output_result_path: output/understanding_cot/LLaVA-1.6-7B/artphoto.json
+  #   output_result_path: output/understanding_cot/LLaVA-1.6-13B/artphoto.json
   #   metrics: EmotionClassificationMetrics
   #   generation_method: generate
   #   maximum_instructions_num: 10000
 
-  # - task_name: emotion-understanding
-  #   sub_task_name: Image Sentiment Analysis
-  #   dataset_path: datasets/benchmark/emoset
-  #   instruction_file: datasets/benchmark/emoset/instruction_cot.json
-  #   image_folder: datasets/benchmark/emoset/images/
-  #   output_result_path: output/understanding_cot/LLaVA-1.6-7B/emoset.json
-  #   metrics: EmotionClassificationMetrics
-  #   generation_method: generate
-  #   maximum_instructions_num: 10000
+  - task_name: emotion-understanding
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/emoset
+    instruction_file: datasets/benchmark/emoset/instruction_cot.json
+    image_folder: datasets/benchmark/emoset/images/
+    output_result_path: output/understanding_cot/LLaVA-1.6-13B/emoset.json
+    metrics: EmotionClassificationMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
 
   # - task_name: emotion-understanding
   #   sub_task_name: Emotion Recognition in Scene Context
   #   dataset_path: datasets/benchmark/emotic
   #   instruction_file: datasets/benchmark/emotic/instruction_cot.json
   #   image_folder: datasets/benchmark/emotic/images/
-  #   output_result_path: output/understanding_cot/LLaVA-1.6-7B/emotic.json
+  #   output_result_path: output/understanding_cot/LLaVA-1.6-13B/emotic.json
   #   metrics: EmotionClassificationMetrics
   #   generation_method: generate
   #   maximum_instructions_num: 10000
@@ -58,7 +58,7 @@ tasks:
   #   dataset_path: datasets/benchmark/emotion6
   #   instruction_file: datasets/benchmark/emotion6/instruction_cot.json
   #   image_folder: datasets/benchmark/emotion6/images/
-  #   output_result_path: output/understanding_cot/LLaVA-1.6-7B/emotion6.json
+  #   output_result_path: output/understanding_cot/LLaVA-1.6-13B/emotion6.json
   #   metrics: EmotionClassificationMetrics
   #   generation_method: generate
   #   maximum_instructions_num: 10000
@@ -68,27 +68,27 @@ tasks:
   #   dataset_path: datasets/benchmark/fi
   #   instruction_file: datasets/benchmark/fi/instruction_cot.json
   #   image_folder: datasets/benchmark/fi/images/
-  #   output_result_path: output/understanding_cot/LLaVA-1.6-7B/fi.json
+  #   output_result_path: output/understanding_cot/LLaVA-1.6-13B/fi.json
   #   metrics: EmotionClassificationMetrics
   #   generation_method: generate
   #   maximum_instructions_num: 10000
 
-  - task_name: emotion-understanding
-    sub_task_name: Emotion Recognition in Scene Context
-    dataset_path: datasets/benchmark/findingemo
-    instruction_file: datasets/benchmark/findingemo/instruction_cot.json
-    image_folder: datasets/benchmark/findingemo/images/
-    output_result_path: output/understanding_cot/LLaVA-1.6-7B/findingemo.json
-    metrics: EmotionClassificationMetrics
-    generation_method: generate
-    maximum_instructions_num: 10000
+  # - task_name: emotion-understanding
+  #   sub_task_name: Emotion Recognition in Scene Context
+  #   dataset_path: datasets/benchmark/findingemo
+  #   instruction_file: datasets/benchmark/findingemo/instruction_cot.json
+  #   image_folder: datasets/benchmark/findingemo/images/
+  #   output_result_path: output/understanding_cot/LLaVA-1.6-13B/findingemo.json
+  #   metrics: EmotionClassificationMetrics
+  #   generation_method: generate
+  #   maximum_instructions_num: 10000
 
   # - task_name: emotion-understanding
   #   sub_task_name: Image Sentiment Analysis
   #   dataset_path: datasets/benchmark/flickrldl
   #   instruction_file: datasets/benchmark/flickrldl/instruction_cot.json
   #   image_folder: datasets/benchmark/flickrldl/images/
-  #   output_result_path: output/understanding_cot/LLaVA-1.6-7B/flickrldl.json
+  #   output_result_path: output/understanding_cot/LLaVA-1.6-13B/flickrldl.json
   #   metrics: EmotionClassificationMetrics
   #   generation_method: generate
   #   maximum_instructions_num: 10000
@@ -98,7 +98,7 @@ tasks:
   #   dataset_path: datasets/benchmark/twitterldl
   #   instruction_file: datasets/benchmark/twitterldl/instruction_cot.json
   #   image_folder: datasets/benchmark/twitterldl/images/
-  #   output_result_path: output/understanding_cot/LLaVA-1.6-7B/twitterldl.json
+  #   output_result_path: output/understanding_cot/LLaVA-1.6-13B/twitterldl.json
   #   metrics: EmotionClassificationMetrics
   #   generation_method: generate
   #   maximum_instructions_num: 10000

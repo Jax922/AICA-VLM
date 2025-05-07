@@ -1,0 +1,14 @@
+model_name: llava-v1.6-vicuna-13b-hf
+model_type: LLaVA-1.6
+model_path: models/llava-hf/llava-v1.6-vicuna-13b-hf
+
+tasks:
+  - task_name: Emotion Content Generation
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/emoset
+    instruction_file: datasets/benchmark/emoset/generation.json
+    image_folder: datasets/benchmark/emoset/images/
+    output_result_path: output/generation/LLaVA-1.6-13B/emoset-generation.json
+    metrics: EmotionReasoningMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000

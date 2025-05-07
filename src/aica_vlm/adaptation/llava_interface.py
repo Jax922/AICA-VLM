@@ -1,6 +1,7 @@
 import json
 import sys
 from typing import Dict, List, Optional, Tuple
+import rpds
 
 import torch
 from PIL import Image
@@ -43,45 +44,54 @@ class Llava(VLMModelInterface):
         self.processor_class: Optional[type] = None
         self.model = None
         self.processor = None
-        self.max_width = 1024  # Define maximum width threshold
-        self.max_height = 1024  # Define maximum height threshold
+        self.max_width = 512  # Define maximum width threshold
+        self.max_height = 512  # Define maximum height threshold
         
     def load_model(self) -> None:
-        if self.model_type == "LLaVA-onevision":
-            from transformers import (
-                AutoProcessor,
-                LlavaOnevisionForConditionalGeneration,
-            )
-
-            self.model_class = LlavaOnevisionForConditionalGeneration
-            self.processor_class = AutoProcessor
-        elif self.model_type == "LLaVA-1.6":
-            from transformers import (
-                LlavaNextForConditionalGeneration,
-                LlavaNextProcessor,
-            )
-
-            self.model_class = LlavaNextForConditionalGeneration
-            self.processor_class = LlavaNextProcessor
+        if True:
+            from vllm import LLM
+            self.model = LLM(model=self.model_path,
+                             gpu_memory_utilization=0.9,
+                             max_model_len=4096)
         else:
-            raise ValueError(f"Unsupported LLaVA model: {self.model_path}")
-
-        self.model = self.model_class.from_pretrained(
-            self.model_path, torch_dtype=torch.float16, low_cpu_mem_usage=True
-        ).to("cuda")
-
-        self.processor = self.processor_class.from_pretrained(self.model_path)
-
-    def process_instruction(self, instruction: Dict) -> Tuple[str, Image.Image]:
-        try:
-            user_content = instruction["messages"][0]["content"]
-            img_path = instruction["images"][0]
-
-            if not isinstance(user_content, str) or not isinstance(img_path, str):
-                raise ValueError(
-                    "Input validation failed: content and image path must be strings"
+            if self.model_type == "LLaVA-onevision":
+                from transformers import (
+                    AutoProcessor,
+                    LlavaOnevisionForConditionalGeneration,
                 )
 
+                self.model_class = LlavaOnevisionForConditionalGeneration
+                self.processor_class = AutoProcessor
+            elif self.model_type == "LLaVA-1.6":
+                from transformers import (
+                    LlavaNextForConditionalGeneration,
+                    LlavaNextProcessor,
+                )
+
+                self.model_class = LlavaNextForConditionalGeneration
+                self.processor_class = LlavaNextProcessor
+            else:
+                raise ValueError(f"Unsupported LLaVA model: {self.model_path}")
+
+            self.model = self.model_class.from_pretrained(
+                self.model_path, torch_dtype=torch.float16, low_cpu_mem_usage=True
+            ).to("cuda")
+
+            self.processor = self.processor_class.from_pretrained(self.model_path)
+
+    def process_instruction(self, instruction: Dict) -> Tuple[str, Image.Image]:
+
+        user_content = instruction["messages"][0]["content"]
+        img_path = instruction["images"][0]
+
+        if not isinstance(user_content, str) or not isinstance(img_path, str):
+            raise ValueError(
+                "Input validation failed: content and image path must be strings"
+            )
+
+        if True:
+            prompt = 'USER: ' + user_content + 'ASSISTANT:'
+        else:
             prompt_text = user_content.split("<image>", 1)[1].strip()
 
             conversation = [
@@ -98,25 +108,31 @@ class Llava(VLMModelInterface):
                 conversation, add_generation_prompt=True
             )
 
-            image = resize_image(img_path, self.max_width, self.max_height)
-            
-            return prompt, image
-
-        except (KeyError, IndexError) as e:
-            raise ValueError(f"Malformed instruction format: {str(e)}")
-        except FileNotFoundError as e:
-            raise ValueError(f"Image file not found: {str(e)}")
+        image = resize_image(img_path, self.max_width, self.max_height)
+        
+        return prompt, image
 
     def inference(self, instruction: Dict) -> str:
-        
+
         prompt, image = self.process_instruction(instruction)
 
-        inputs = self.processor(images=image, text=prompt, return_tensors="pt").to(
-            0, torch.float16
-        )
+        if True:
+            # Single prompt inference
+            from vllm import SamplingParams
+            sampling_params = SamplingParams(max_tokens=512, temperature=0.5, top_p=0.5)
+            outputs = self.model.generate({
+                "prompt": prompt,
+                "multi_modal_data": {"image": image},
+            }, sampling_params = sampling_params, use_tqdm = False)
+            output_text = outputs[0].outputs[0].text
+            print(output_text)
+        else:
+            inputs = self.processor(images=image, text=prompt, return_tensors="pt").to(
+                0, torch.float16
+            )
 
-        output = self.model.generate(**inputs, max_new_tokens=512, do_sample=False)
-        output_text = self.processor.decode(output[0], skip_special_tokens=True)
+            output = self.model.generate(**inputs, max_new_tokens=512, do_sample=False)
+            output_text = self.processor.decode(output[0], skip_special_tokens=True)
 
         marker = "[/INST]"
         marker_index = output_text.find(marker)

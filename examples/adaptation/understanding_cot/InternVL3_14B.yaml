@@ -13,3 +13,4 @@ tasks:
     metrics: EmotionClassificationMetrics
     generation_method: generate
     maximum_instructions_num: 10000
+    

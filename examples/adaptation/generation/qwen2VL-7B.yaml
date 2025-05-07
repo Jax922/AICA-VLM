@@ -1,0 +1,14 @@
+model_name: Qwen2-VL-7B-Instruct
+model_type: Qwen2-VL
+model_path: models/Qwen/Qwen2-VL-7B-Instruct
+
+tasks:
+  - task_name: Emotion Content Generation
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/emoset
+    instruction_file: datasets/benchmark/emoset/generation.json
+    image_folder: datasets/benchmark/emoset/images/
+    output_result_path: output/generation/Qwen2-VL-7B-Instruct/emoset-generation.json
+    metrics: EmotionReasoningMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000

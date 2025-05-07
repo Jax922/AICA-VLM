@@ -1,0 +1,14 @@
+model_name: Ovis2-2B
+model_type: Ovis2
+model_path: models/AIDC-AI/Ovis2-2B
+
+tasks:
+  - task_name: Emotion Content Generation
+    sub_task_name: Image Sentiment Analysis
+    dataset_path: datasets/benchmark/emoset
+    instruction_file: datasets/benchmark/emoset/generation.json
+    image_folder: datasets/benchmark/emoset/images/
+    output_result_path: output/generation/Ovis2-2B/emoset-generation.json
+    metrics: EmotionReasoningMetrics
+    generation_method: generate
+    maximum_instructions_num: 10000
