@@ -34,7 +34,7 @@
 
 # AICA-VLM Benchmark
 
-This project provides a benchmark framework for evaluating Vision-Language Models (VLMs) on **emotion understanding** and **emotion reasoning** tasks.
+This project provides a benchmark framework for evaluating Vision-Language Models (VLMs) on **emotion understanding**,  **emotion reasoning** and   **emotion-guided content generation** tasks.
 It is designed for standardized evaluation across multiple datasets and task formulations.
 
 ---
