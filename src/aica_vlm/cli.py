@@ -5,6 +5,7 @@ import typer
 # from aica_vlm.instructions import build_instruction_set
 import yaml
 
+import aica_vlm.metrics.llm_based_metrics as llm_based_metrics
 from aica_vlm.adaptation.closed_model_run import closedmodel_run
 from aica_vlm.adaptation.run import run
 from aica_vlm.dataset import (
@@ -176,6 +177,34 @@ def compute_metrics(json_file: str):
         raise typer.Exit(code=1)
     except Exception as e:
         typer.echo(f"Error during metrics computation: {e}", err=True)
+        raise typer.Exit(code=1)
+
+    # compute the llm_based_metrics
+
+
+@app.command("compute-llm-metrics")
+def compute_llm_metrics(
+    json_file: str = typer.Argument(..., help="Path to the JSON file"),
+    task: str = typer.Option(
+        "emotion-reasoning", help="Task type: reasoning or egeneration"
+    ),
+):
+    """
+    Compute LLM-based metrics using the provided JSON file.
+    """
+    try:
+        typer.echo(f"Loading JSON file from: {json_file}")
+        typer.echo(f"Task type: {task}")
+        llm_based_metrics.run(json_file, task)
+        typer.echo("LLM-based metrics computation completed successfully.")
+    except FileNotFoundError:
+        typer.echo(f"Error: File not found at {json_file}", err=True)
+        raise typer.Exit(code=1)
+    except json.JSONDecodeError:
+        typer.echo("Error: Invalid JSON file format.", err=True)
+        raise typer.Exit(code=1)
+    except Exception as e:
+        typer.echo(f"Error during LLM-based metrics computation: {e}", err=True)
         raise typer.Exit(code=1)
 
 
