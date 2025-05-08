@@ -81,7 +81,7 @@ class ClosedSourceAPIModel:
                 messages=messages,
                 temperature=0.7,
                 # max_tokens=512, # for safe
-            )     
+            )
         except Exception as e:
             print(e)
             if 'qwen' in self.model_name:   
