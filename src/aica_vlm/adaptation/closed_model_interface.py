@@ -80,10 +80,11 @@ class ClosedSourceAPIModel:
                 model=self.model_name,
                 messages=messages,
                 temperature=0.7,
-                max_tokens=512, # for safe
-            )
+                # max_tokens=512, # for safe
+            )     
         except Exception as e:
-            if 'qwen' in self.model_name:         
+            print(e)
+            if 'qwen' in self.model_name:   
                 # https://help.aliyun.com/zh/model-studio/error-code?spm=a2c4g.11186623.help-menu-2400256.d_2_11_0.353f6839uml0sQ
                 error_code = e.code # others: message, type
                 if error_code in ['data_inspection_failed', 'DataInspectionFailed']:
@@ -94,10 +95,14 @@ class ClosedSourceAPIModel:
                         model=self.model_name,
                         messages=messages,
                         temperature=0.7,
-                        max_tokens=512, # for safe
+                        # max_tokens=512, # for safe
                     )
                     return response.choices[0].message.content.strip()
                 elif error_code in ['Arrearage']:
                     print("Error code: 400 - {'error': {'code': 'Arrearage'} }")
+
+        if 'gemini' in self.model_name:
+            if response.choices == None:
+                return 'Error 500'
 
         return response.choices[0].message.content.strip()

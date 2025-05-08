@@ -1,7 +1,6 @@
 import json
 import sys
 from typing import Dict, List, Optional, Tuple
-import rpds
 
 import torch
 from PIL import Image
